@@ -128,6 +128,67 @@ export default function ContentPage() {
         <p className="text-white/40 mt-2">Personaliza los videos y textos de tu plataforma</p>
       </header>
 
+      {/* Brands Management */}
+      <section className="glass p-8 rounded-[2.5rem] border-white/10 bg-accent-cyan/5">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <Plus className="text-accent-cyan" />
+            <h2 className="text-2xl font-bold">Marcas Aliadas (Logos)</h2>
+          </div>
+          <button
+            onClick={addBrand}
+            className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl flex items-center gap-2 transition-all border border-white/10"
+          >
+            <Plus size={18} />
+            Añadir Nueva Marca
+          </button>
+        </div>
+
+        {brands.length === 0 ? (
+          <div className="text-center py-12 border-2 border-dashed border-white/5 rounded-[2rem]">
+            <p className="text-white/20">Aún no has añadido ninguna marca.</p>
+            <button onClick={addBrand} className="text-accent-cyan text-sm font-bold mt-2 hover:underline">
+              Haz clic aquí para empezar
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {brands.map((brand) => (
+              <div key={brand.id} className="bg-black/40 p-6 rounded-3xl border border-white/5 space-y-4">
+                <div className="flex justify-between items-center">
+                  <input
+                    type="text"
+                    className="bg-transparent font-bold border-none focus:ring-0 p-0 text-white/80 w-full"
+                    placeholder="Nombre de la empresa"
+                    value={brand.name}
+                    onBlur={(e) => updateBrand(brand.id, 'name', e.target.value)}
+                    onChange={(e) => setBrands(brands.map(b => b.id === brand.id ? { ...b, name: e.target.value } : b))}
+                  />
+                  <button onClick={() => deleteBrand(brand.id)} className="text-red-400/40 hover:text-red-400 p-2">
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Pegar URL del logo (ej: cloudinary o imgur)"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-accent-cyan transition-all"
+                  value={brand.logo_url}
+                  onBlur={(e) => updateBrand(brand.id, 'logo_url', e.target.value)}
+                  onChange={(e) => setBrands(brands.map(b => b.id === brand.id ? { ...b, logo_url: e.target.value } : b))}
+                />
+                <div className="h-16 flex items-center justify-center bg-white/5 rounded-2xl p-3 border border-white/5">
+                  {brand.logo_url ? (
+                    <img src={brand.logo_url} alt={brand.name} className="h-full object-contain filter grayscale invert brightness-200" />
+                  ) : (
+                    <span className="text-[10px] uppercase tracking-widest text-white/20 font-bold">Vista Previa</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
       {/* Hero Section Management */}
       <section className="glass p-8 rounded-[2.5rem] border-white/10">
         <div className="flex items-center gap-3 mb-6">
@@ -233,8 +294,6 @@ export default function ContentPage() {
           </button>
         </div>
       </section>
-
-      {/* Brands Management */}
       <section className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
