@@ -30,6 +30,17 @@ interface HeroProps {
   accentEffect?: string;
   accentSize?: string;
 
+  // Button Styles
+  btnPrimaryBg?: string;
+  btnPrimaryText?: string;
+  btnSecondaryBorder?: string;
+  btnSecondaryText?: string;
+
+  // Marquee Styles
+  marqueeLabel?: string;
+  marqueeLabelColor?: string;
+  marqueeLabelSize?: string;
+
   brands?: Brand[];
 }
 
@@ -51,6 +62,15 @@ const Hero = ({
   accentGradient = true,
   accentEffect = "none",
   accentSize = "8",
+
+  btnPrimaryBg = "#00f2ff",
+  btnPrimaryText = "#000000",
+  btnSecondaryBorder = "#ffffff",
+  btnSecondaryText = "#ffffff",
+
+  marqueeLabel = "Marcas que confían en nosotros",
+  marqueeLabelColor = "rgba(255,255,255,0.4)",
+  marqueeLabelSize = "0.75",
 
   brands = []
 }: HeroProps) => {
@@ -83,7 +103,7 @@ const Hero = ({
         base.filter = `drop-shadow(0 0 10px ${col1})`;
         break;
       case 'neon':
-        base.filter = `drop-shadow(0 0 5px #fff) drop-shadow(0 0 20px ${col1})`;
+        base.filter = `drop-shadow(0 0 2px #fff) drop-shadow(0 0 10px ${col1})`;
         break;
       case '3d':
         base.textShadow = `3px 3px 0px rgba(0,0,0,0.3), 6px 6px 0px rgba(0,0,0,0.1)`;
@@ -140,7 +160,8 @@ const Hero = ({
               href="#contacto"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-accent-cyan text-black font-bold rounded-2xl hover:shadow-[0_0_30px_rgba(0,242,255,0.4)] transition-all"
+              style={{ backgroundColor: btnPrimaryBg, color: btnPrimaryText }}
+              className="px-8 py-4 font-bold rounded-2xl transition-all shadow-lg hover:brightness-110"
             >
               Comenzar Ahora
             </motion.a>
@@ -148,7 +169,8 @@ const Hero = ({
               href="#servicios"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 glass border-white/10 text-white font-bold rounded-2xl hover:bg-white/5 transition-all"
+              style={{ border: `1px solid ${btnSecondaryBorder}`, color: btnSecondaryText }}
+              className="px-8 py-4 glass text-white font-bold rounded-2xl hover:bg-white/5 transition-all"
             >
               Ver Servicios
             </motion.a>
@@ -160,8 +182,11 @@ const Hero = ({
       {brands.length > 0 && (
         <div className="absolute bottom-16 md:bottom-24 w-full z-20">
           <div className="max-w-7xl mx-auto px-4">
-            <p className="text-center text-[10px] md:text-xs uppercase tracking-[0.4em] text-white/40 mb-10 font-bold">
-              Marcas que confían en nosotros
+            <p 
+              style={{ color: marqueeLabelColor, fontSize: `${marqueeLabelSize}rem` }}
+              className="text-center uppercase tracking-[0.4em] mb-10 font-bold"
+            >
+              {marqueeLabel}
             </p>
             <div className="relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-32 before:bg-gradient-to-r before:from-black before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-32 after:bg-gradient-to-l after:after:from-black after:to-transparent">
               <motion.div 

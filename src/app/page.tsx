@@ -66,6 +66,17 @@ export default async function Home() {
         accentEffect={settings.hero_accent_effect}
         accentSize={settings.hero_accent_size}
 
+        // Estilos Botones
+        btnPrimaryBg={settings.btn_primary_bg}
+        btnPrimaryText={settings.btn_primary_text}
+        btnSecondaryBorder={settings.btn_secondary_border}
+        btnSecondaryText={settings.btn_secondary_text}
+
+        // Estilos Marquee
+        marqueeLabel={settings.marquee_label}
+        marqueeLabelColor={settings.marquee_label_color}
+        marqueeLabelSize={settings.marquee_label_size}
+
         brands={brands || []}
       />
       
