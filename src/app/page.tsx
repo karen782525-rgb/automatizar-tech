@@ -50,14 +50,15 @@ export default async function Home() {
         mainColor2={settings.hero_main_color_2}
         mainGradient={settings.hero_main_gradient === 'true'}
         mainEffect={settings.hero_main_effect}
+        mainSize={settings.hero_main_size}
 
         // Estilos Accent
         accentColor={settings.hero_accent_color}
         accentColor2={settings.hero_accent_color_2}
         accentGradient={settings.hero_accent_gradient === 'true'}
         accentEffect={settings.hero_accent_effect}
+        accentSize={settings.hero_accent_size}
 
-        titleSize={settings.hero_title_size}
         brands={brands || []}
       />
       

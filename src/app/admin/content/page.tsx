@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Video, FileText, Type, Palette, Layout } from 'lucide-react';
+import { Save, Plus, Trash2, Video, FileText, Type, Palette, Layout, Maximize } from 'lucide-react';
 
 export default function ContentPage() {
   const [heroVideo, setHeroVideo] = useState('');
@@ -17,14 +17,15 @@ export default function ContentPage() {
   const [heroMainColor2, setHeroMainColor2] = useState('#ffffff');
   const [heroMainGradient, setHeroMainGradient] = useState(false);
   const [heroMainEffect, setHeroMainEffect] = useState('none');
+  const [heroMainSize, setHeroMainSize] = useState('8');
 
   // Estilos Texto Destacado (Inteligentes)
   const [heroAccentColor, setHeroAccentColor] = useState('#00f2ff');
   const [heroAccentColor2, setHeroAccentColor2] = useState('#9d50bb');
   const [heroAccentGradient, setHeroAccentGradient] = useState(true);
   const [heroAccentEffect, setHeroAccentEffect] = useState('none');
+  const [heroAccentSize, setHeroAccentSize] = useState('8');
 
-  const [heroTitleSize, setHeroTitleSize] = useState('8');
   const [brands, setBrands] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,13 +46,13 @@ export default function ContentPage() {
           setHeroMainColor2(settings.find(s => s.key === 'hero_main_color_2')?.value || '#ffffff');
           setHeroMainGradient(settings.find(s => s.key === 'hero_main_gradient')?.value === 'true');
           setHeroMainEffect(settings.find(s => s.key === 'hero_main_effect')?.value || 'none');
+          setHeroMainSize(settings.find(s => s.key === 'hero_main_size')?.value || '8');
 
           setHeroAccentColor(settings.find(s => s.key === 'hero_accent_color')?.value || '#00f2ff');
           setHeroAccentColor2(settings.find(s => s.key === 'hero_accent_color_2')?.value || '#9d50bb');
           setHeroAccentGradient(settings.find(s => s.key === 'hero_accent_gradient')?.value === 'true');
           setHeroAccentEffect(settings.find(s => s.key === 'hero_accent_effect')?.value || 'none');
-
-          setHeroTitleSize(settings.find(s => s.key === 'hero_title_size')?.value || '8');
+          setHeroAccentSize(settings.find(s => s.key === 'hero_accent_size')?.value || '8');
         }
 
         const { data: svcs } = await supabase.from('services').select('*').order('display_order');
@@ -81,18 +82,18 @@ export default function ContentPage() {
       { key: 'hero_main_color_2', value: heroMainColor2 },
       { key: 'hero_main_gradient', value: String(heroMainGradient) },
       { key: 'hero_main_effect', value: heroMainEffect },
+      { key: 'hero_main_size', value: heroMainSize },
 
       { key: 'hero_accent_color', value: heroAccentColor },
       { key: 'hero_accent_color_2', value: heroAccentColor2 },
       { key: 'hero_accent_gradient', value: String(heroAccentGradient) },
       { key: 'hero_accent_effect', value: heroAccentEffect },
-
-      { key: 'hero_title_size', value: heroTitleSize },
+      { key: 'hero_accent_size', value: heroAccentSize },
     ];
     const { error } = await supabase.from('site_settings').upsert(updates);
     setSaving(false);
     if (error) alert('Error: ' + error.message);
-    else alert('Configuración guardada correctamente');
+    else alert('Cambios guardados con éxito');
   };
 
   const addBrand = async () => {
@@ -137,7 +138,7 @@ export default function ContentPage() {
     <div className="space-y-12 pb-24 max-w-7xl mx-auto px-4">
       <header>
         <h1 className="text-4xl font-bold tracking-tighter">Gestión de Contenido</h1>
-        <p className="text-white/40 mt-2 text-sm uppercase tracking-widest">Personaliza cada detalle de tu plataforma</p>
+        <p className="text-white/40 mt-2 text-sm uppercase tracking-widest">Control visual absoluto de tu plataforma</p>
       </header>
 
       {/* Marcas Aliadas */}
@@ -189,39 +190,35 @@ export default function ContentPage() {
         <div className="space-y-12">
           {/* Controles de Contenido Base */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Video URL (Cloudinary)</label>
-                <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Subtítulo</label>
-                <textarea className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 h-24 outline-none resize-none" value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} />
-              </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Video URL (Cloudinary)</label>
+              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} />
             </div>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Efectos Video</label>
-                <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" placeholder="ej: e_grayscale" value={heroEffects} onChange={(e) => setHeroEffects(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Tamaño Global Título (rem)</label>
-                <input type="number" step="0.5" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroTitleSize} onChange={(e) => setHeroTitleSize(e.target.value)} />
-              </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Efectos Video</label>
+              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" placeholder="ej: e_grayscale" value={heroEffects} onChange={(e) => setHeroEffects(e.target.value)} />
             </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Subtítulo</label>
+            <textarea className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 h-24 outline-none resize-none" value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} />
           </div>
 
           {/* ESTILO TEXTO 1 (PROCESOS) */}
           <div className="p-8 rounded-3xl bg-white/5 border border-white/5 space-y-6">
-            <div className="flex items-center gap-3 border-b border-white/5 pb-4">
-              <Layout size={18} className="text-white/40" />
-              <h3 className="font-bold text-white/80">Estilo del Texto Principal (Ej: "Procesos")</h3>
+            <div className="flex items-center justify-between border-b border-white/5 pb-4">
+              <div className="flex items-center gap-3">
+                <Layout size={18} className="text-white/40" />
+                <h3 className="font-bold text-white/80">Texto Principal (Ej: "Procesos")</h3>
+              </div>
+              <div className="flex items-center gap-2 bg-black/40 px-4 py-2 rounded-xl">
+                <Maximize size={14} className="text-white/20" />
+                <span className="text-[10px] text-white/40 font-bold uppercase">Tamaño:</span>
+                <input type="number" step="0.5" className="bg-transparent border-none w-12 text-sm font-bold text-accent-cyan p-0 focus:ring-0" value={heroMainSize} onChange={(e) => setHeroMainSize(e.target.value)} />
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/20 uppercase ml-2">Texto</label>
-                <input className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroTitleMain} onChange={(e) => setHeroTitleMain(e.target.value)} />
-              </div>
+              <input className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroTitleMain} onChange={(e) => setHeroTitleMain(e.target.value)} />
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold text-white/20 uppercase ml-2 text-center block">Color Base</label>
@@ -253,15 +250,19 @@ export default function ContentPage() {
 
           {/* ESTILO TEXTO 2 (INTELIGENTES) */}
           <div className="p-8 rounded-3xl bg-accent-cyan/5 border border-accent-cyan/10 space-y-6">
-            <div className="flex items-center gap-3 border-b border-white/5 pb-4">
-              <Palette size={18} className="text-accent-cyan" />
-              <h3 className="font-bold text-accent-cyan/80">Estilo del Texto Destacado (Ej: "Inteligentes")</h3>
+            <div className="flex items-center justify-between border-b border-white/5 pb-4">
+              <div className="flex items-center gap-3">
+                <Palette size={18} className="text-accent-cyan" />
+                <h3 className="font-bold text-accent-cyan/80">Texto Destacado (Ej: "Inteligentes")</h3>
+              </div>
+              <div className="flex items-center gap-2 bg-black/40 px-4 py-2 rounded-xl border border-accent-cyan/20">
+                <Maximize size={14} className="text-accent-cyan/40" />
+                <span className="text-[10px] text-accent-cyan/40 font-bold uppercase">Tamaño:</span>
+                <input type="number" step="0.5" className="bg-transparent border-none w-12 text-sm font-bold text-accent-cyan p-0 focus:ring-0" value={heroAccentSize} onChange={(e) => setHeroAccentSize(e.target.value)} />
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/20 uppercase ml-2">Texto</label>
-                <input className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroTitleAccent} onChange={(e) => setHeroTitleAccent(e.target.value)} />
-              </div>
+              <input className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroTitleAccent} onChange={(e) => setHeroTitleAccent(e.target.value)} />
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold text-white/20 uppercase ml-2 text-center block">Color Base</label>

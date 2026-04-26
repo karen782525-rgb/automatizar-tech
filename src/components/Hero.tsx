@@ -21,14 +21,15 @@ interface HeroProps {
   mainColor2?: string;
   mainGradient?: boolean;
   mainEffect?: string;
+  mainSize?: string;
 
   // Accent Text Styles
   accentColor?: string;
   accentColor2?: string;
   accentGradient?: boolean;
   accentEffect?: string;
+  accentSize?: string;
 
-  titleSize?: string;
   brands?: Brand[];
 }
 
@@ -43,13 +44,14 @@ const Hero = ({
   mainColor2 = "#ffffff",
   mainGradient = false,
   mainEffect = "none",
+  mainSize = "8",
 
   accentColor = "#00f2ff",
   accentColor2 = "#9d50bb",
   accentGradient = true,
   accentEffect = "none",
+  accentSize = "8",
 
-  titleSize = "8",
   brands = []
 }: HeroProps) => {
   // Function to inject Cloudinary effects into the URL
@@ -63,8 +65,10 @@ const Hero = ({
 
   const finalVideoUrl = getTransformedUrl(videoUrl, effects);
 
-  const getTextStyle = (isGrad: boolean, col1: string, col2: string, effect: string): React.CSSProperties => {
-    const base: React.CSSProperties = {};
+  const getTextStyle = (isGrad: boolean, col1: string, col2: string, effect: string, size: string): React.CSSProperties => {
+    const base: React.CSSProperties = {
+      fontSize: `${size}rem`
+    };
     
     if (isGrad) {
       base.backgroundImage = `linear-gradient(to right, ${col1}, ${col2})`;
@@ -108,21 +112,23 @@ const Hero = ({
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-5xl">
+      <div className="relative z-10 text-center px-4 max-w-7xl">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
-          <h1 
-            style={{ fontSize: `${titleSize}rem` }}
-            className="text-5xl md:text-[length:var(--title-size)] font-extrabold tracking-tighter mb-6 leading-tight"
-          >
-            <span style={getTextStyle(mainGradient, mainColor, mainColor2, mainEffect)} className="inline-block">
+          <h1 className="font-extrabold tracking-tighter mb-6 leading-tight flex flex-wrap justify-center items-center gap-x-4 md:gap-x-6">
+            <span 
+              style={getTextStyle(mainGradient, mainColor, mainColor2, mainEffect, mainSize)} 
+              className="inline-block text-5xl md:text-[length:inherit]"
+            >
               {titleMain}
             </span>
-            {' '}
-            <span style={getTextStyle(accentGradient, accentColor, accentColor2, accentEffect)} className="inline-block">
+            <span 
+              style={getTextStyle(accentGradient, accentColor, accentColor2, accentEffect, accentSize)} 
+              className="inline-block text-5xl md:text-[length:inherit]"
+            >
               {titleAccent}
             </span>
           </h1>
