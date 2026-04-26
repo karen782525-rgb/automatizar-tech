@@ -124,11 +124,11 @@ const Hero = ({
               >
                 {/* Double the brands for infinite loop effect */}
                 {[...brands, ...brands].map((brand, idx) => (
-                  <div key={`${brand.id}-${idx}`} className="flex items-center justify-center transition-all duration-500 opacity-90 hover:opacity-100 hover:scale-110">
+                  <div key={`${brand.id}-${idx}`} className="flex items-center justify-center transition-all duration-500 opacity-60 hover:opacity-100 hover:scale-105">
                     <img 
                       src={brand.logo_url} 
                       alt={brand.name} 
-                      className="h-14 md:h-20 lg:h-24 w-auto object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] brightness-110 contrast-110"
+                      className="h-10 md:h-14 lg:h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] brightness-110"
                     />
                   </div>
                 ))}
