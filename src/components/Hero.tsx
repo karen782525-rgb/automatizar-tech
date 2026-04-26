@@ -13,6 +13,7 @@ const Hero = ({ videoUrl = "https://res.cloudinary.com/demo/video/upload/v163123
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video
+          key={videoUrl}
           autoPlay
           loop
           muted

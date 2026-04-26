@@ -5,7 +5,7 @@ import ContactForm from '@/components/ContactForm';
 import Chatbot from '@/components/Chatbot';
 import { supabase } from '@/lib/supabase';
 
-export const revalidate = 60; // Revalidate every minute
+export const revalidate = 0; // Disable cache for immediate CMS updates
 
 async function getServices() {
   const { data: services } = await supabase
