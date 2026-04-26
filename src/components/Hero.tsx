@@ -68,14 +68,19 @@ const Hero = ({
         >
           {/* Brands Section */}
           {brands.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-8 mb-12 opacity-50 hover:opacity-100 transition-opacity">
+            <div className="flex flex-wrap items-center justify-center gap-12 mb-16 px-6">
               {brands.map((brand) => (
-                <img 
+                <motion.div
                   key={brand.id}
-                  src={brand.logo_url} 
-                  alt={brand.name} 
-                  className="h-6 md:h-8 object-contain filter grayscale invert brightness-200"
-                />
+                  whileHover={{ scale: 1.1 }}
+                  className="relative group"
+                >
+                  <img 
+                    src={brand.logo_url} 
+                    alt={brand.name} 
+                    className="h-12 md:h-16 w-auto object-contain transition-all duration-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                  />
+                </motion.div>
               ))}
             </div>
           )}

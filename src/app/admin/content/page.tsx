@@ -140,7 +140,7 @@ export default function ContentPage() {
                 onChange={(e) => setBrands(brands.map(b => b.id === brand.id ? { ...b, logo_url: e.target.value } : b))}
               />
               <div className="h-16 flex items-center justify-center bg-white/5 rounded-xl">
-                {brand.logo_url && <img src={brand.logo_url} className="h-full object-contain filter grayscale invert brightness-200" />}
+                {brand.logo_url && <img src={brand.logo_url} className="h-full object-contain drop-shadow-lg" />}
               </div>
             </div>
           ))}
