@@ -30,6 +30,7 @@ const ServiceCard = ({ title, description, videoUrl }: ServiceCardProps) => {
       {/* Video Container */}
       <div className="relative aspect-video w-full overflow-hidden">
         <video
+          key={videoUrl}
           ref={videoRef}
           autoPlay
           loop
