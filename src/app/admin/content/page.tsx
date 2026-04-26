@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Video, FileText, Type, Palette, Layout, Maximize, Smartphone, MousePointer2 } from 'lucide-react';
+import { Save, Plus, Trash2, Video, FileText, Type, Palette, Layout, Maximize, Smartphone, MousePointer2, Briefcase } from 'lucide-react';
 
 export default function ContentPage() {
   const [heroVideo, setHeroVideo] = useState('');
@@ -44,6 +44,15 @@ export default function ContentPage() {
   const [marqueeLabel, setMarqueeLabel] = useState('Marcas que confían en nosotros');
   const [marqueeLabelColor, setMarqueeLabelColor] = useState('#ffffff66');
   const [marqueeLabelSize, setMarqueeLabelSize] = useState('0.75');
+
+  // Estilos Sección Servicios
+  const [servicesTitle, setServicesTitle] = useState('Nuestros Servicios');
+  const [servicesSubtitle, setServicesSubtitle] = useState('Transformamos tu operación...');
+  const [servicesTitleColor, setServicesTitleColor] = useState('#ffffff');
+  const [servicesTitleColor2, setServicesTitleColor2] = useState('#00f2ff');
+  const [servicesTitleGradient, setServicesTitleGradient] = useState(true);
+  const [servicesTitleSize, setServicesTitleSize] = useState('4');
+  const [servicesTitleEffect, setServicesTitleEffect] = useState('none');
 
   const [brands, setBrands] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
@@ -88,6 +97,14 @@ export default function ContentPage() {
           setMarqueeLabel(settings.find(s => s.key === 'marquee_label')?.value || 'Marcas que confían en nosotros');
           setMarqueeLabelColor(settings.find(s => s.key === 'marquee_label_color')?.value || '#ffffff66');
           setMarqueeLabelSize(settings.find(s => s.key === 'marquee_label_size')?.value || '0.75');
+
+          setServicesTitle(settings.find(s => s.key === 'services_title')?.value || 'Nuestros Servicios');
+          setServicesSubtitle(settings.find(s => s.key === 'services_subtitle')?.value || 'Transformamos tu operación...');
+          setServicesTitleColor(settings.find(s => s.key === 'services_title_color')?.value || '#ffffff');
+          setServicesTitleColor2(settings.find(s => s.key === 'services_title_color_2')?.value || '#00f2ff');
+          setServicesTitleGradient(settings.find(s => s.key === 'services_title_gradient')?.value === 'true');
+          setServicesTitleSize(settings.find(s => s.key === 'services_title_size')?.value || '4');
+          setServicesTitleEffect(settings.find(s => s.key === 'services_title_effect')?.value || 'none');
         }
 
         const { data: svcs } = await supabase.from('services').select('*').order('display_order');
@@ -140,6 +157,14 @@ export default function ContentPage() {
       { key: 'marquee_label', value: marqueeLabel },
       { key: 'marquee_label_color', value: marqueeLabelColor },
       { key: 'marquee_label_size', value: marqueeLabelSize },
+
+      { key: 'services_title', value: servicesTitle },
+      { key: 'services_subtitle', value: servicesSubtitle },
+      { key: 'services_title_color', value: servicesTitleColor },
+      { key: 'services_title_color_2', value: servicesTitleColor2 },
+      { key: 'services_title_gradient', value: String(servicesTitleGradient) },
+      { key: 'services_title_size', value: servicesTitleSize },
+      { key: 'services_title_effect', value: servicesTitleEffect },
     ];
     const { error } = await supabase.from('site_settings').upsert(updates);
     setSaving(false);
@@ -253,7 +278,6 @@ export default function ContentPage() {
         <div className="space-y-16">
           {/* Tipografía dual */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Texto 1 */}
             <div className="p-8 rounded-[2rem] bg-white/5 border border-white/10 space-y-6">
               <h3 className="text-xs font-black uppercase tracking-[0.3em] text-white/40 mb-8 border-b border-white/5 pb-4 flex items-center gap-2"><Type size={14}/> Parte Principal</h3>
               <input className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 outline-none font-bold text-xl" value={heroTitleMain} onChange={(e) => setHeroTitleMain(e.target.value)} />
@@ -270,7 +294,6 @@ export default function ContentPage() {
               </div>
             </div>
 
-            {/* Texto 2 */}
             <div className="p-8 rounded-[2rem] bg-accent-cyan/5 border border-accent-cyan/20 space-y-6">
               <h3 className="text-xs font-black uppercase tracking-[0.3em] text-accent-cyan/40 mb-8 border-b border-white/5 pb-4 flex items-center gap-2"><Palette size={14}/> Parte Destacada</h3>
               <input className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 outline-none font-bold text-xl" value={heroTitleAccent} onChange={(e) => setHeroTitleAccent(e.target.value)} />
@@ -288,56 +311,75 @@ export default function ContentPage() {
             </div>
           </div>
 
-          {/* ESTILO DE BOTONES */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-12 border-t border-white/5">
             <div className="space-y-6 p-8 rounded-[2rem] bg-white/5 border border-white/5">
               <h3 className="text-xs font-black uppercase tracking-widest text-white/40 flex items-center gap-2"><MousePointer2 size={14}/> Botón Primario</h3>
               <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2 text-center">
-                  <label className="text-[8px] font-black text-white/20 uppercase tracking-widest">Relleno</label>
-                  <input type="color" value={btnPrimaryBg} onChange={(e) => setBtnPrimaryBg(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
-                </div>
-                <div className="space-y-2 text-center">
-                  <label className="text-[8px] font-black text-white/20 uppercase tracking-widest">Texto</label>
-                  <input type="color" value={btnPrimaryText} onChange={(e) => setBtnPrimaryText(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
-                </div>
+                <input type="color" value={btnPrimaryBg} onChange={(e) => setBtnPrimaryBg(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
+                <input type="color" value={btnPrimaryText} onChange={(e) => setBtnPrimaryText(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
               </div>
-              <div style={{ backgroundColor: btnPrimaryBg, color: btnPrimaryText }} className="py-4 text-center rounded-2xl font-bold text-xs uppercase tracking-widest pointer-events-none">Vista Previa</div>
             </div>
-
             <div className="space-y-6 p-8 rounded-[2rem] bg-white/5 border border-white/5">
               <h3 className="text-xs font-black uppercase tracking-widest text-white/40 flex items-center gap-2"><MousePointer2 size={14}/> Botón Secundario</h3>
               <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2 text-center">
-                  <label className="text-[8px] font-black text-white/20 uppercase tracking-widest">Borde</label>
-                  <input type="color" value={btnSecondaryBorder} onChange={(e) => setBtnSecondaryBorder(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
-                </div>
-                <div className="space-y-2 text-center">
-                  <label className="text-[8px] font-black text-white/20 uppercase tracking-widest">Texto</label>
-                  <input type="color" value={btnSecondaryText} onChange={(e) => setBtnSecondaryText(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
-                </div>
+                <input type="color" value={btnSecondaryBorder} onChange={(e) => setBtnSecondaryBorder(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
+                <input type="color" value={btnSecondaryText} onChange={(e) => setBtnSecondaryText(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
               </div>
-              <div style={{ border: `1px solid ${btnSecondaryBorder}`, color: btnSecondaryText }} className="py-4 text-center rounded-2xl font-bold text-xs uppercase tracking-widest pointer-events-none bg-transparent">Vista Previa</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Servicios Section Header Styles */}
+      <section className="glass p-10 rounded-[3rem] border-white/5 bg-gradient-to-br from-accent-cyan/5 to-transparent">
+        <div className="flex items-center gap-4 mb-10">
+          <Briefcase className="text-accent-cyan" />
+          <h2 className="text-2xl font-black uppercase tracking-tighter">Sección de Servicios (Encabezado)</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-white/20 uppercase ml-2">Título de la Sección</label>
+              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold" value={servicesTitle} onChange={(e) => setServicesTitle(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-white/20 uppercase ml-2">Subtítulo</label>
+              <textarea className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 h-24 outline-none resize-none font-medium text-sm" value={servicesSubtitle} onChange={(e) => setServicesSubtitle(e.target.value)} />
             </div>
           </div>
 
-          {/* ESTILO ETIQUETA MARCAS */}
-          <div className="pt-12 border-t border-white/5">
-            <h3 className="text-xs font-black uppercase tracking-widest text-white/40 mb-8 flex items-center gap-2"><Smartphone size={14}/> Etiqueta del Carrusel de Marcas</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 rounded-[2rem] bg-white/5 border border-white/5">
+          <div className="space-y-6 bg-black/20 p-8 rounded-[2rem] border border-white/5">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-white/20 uppercase ml-2 tracking-widest">Texto de la sección</label>
-                <input className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 outline-none font-bold" value={marqueeLabel} onChange={(e) => setMarqueeLabel(e.target.value)} />
+                <label className="text-[10px] font-black text-white/20 uppercase ml-2">Color 1</label>
+                <input type="color" value={servicesTitleColor} onChange={(e) => setServicesTitleColor(e.target.value)} className="w-full h-10 bg-transparent cursor-pointer" />
               </div>
-              <div className="space-y-2 text-center">
-                <label className="text-[10px] font-black text-white/20 uppercase tracking-widest">Color del texto</label>
-                <input type="color" value={marqueeLabelColor} onChange={(e) => setMarqueeLabelColor(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
+              {servicesTitleGradient && (
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-white/20 uppercase ml-2">Color 2</label>
+                  <input type="color" value={servicesTitleColor2} onChange={(e) => setServicesTitleColor2(e.target.value)} className="w-full h-10 bg-transparent cursor-pointer" />
+                </div>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-white/20 uppercase ml-2 text-center block">Tamaño (rem)</label>
+                <input type="number" step="0.5" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none font-bold text-center" value={servicesTitleSize} onChange={(e) => setServicesTitleSize(e.target.value)} />
               </div>
-              <div className="space-y-2 text-center">
-                <label className="text-[10px] font-black text-white/20 uppercase tracking-widest">Tamaño (rem)</label>
-                <input type="number" step="0.05" className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 outline-none font-bold text-center" value={marqueeLabelSize} onChange={(e) => setMarqueeLabelSize(e.target.value)} />
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-white/20 uppercase ml-2 text-center block">Efecto</label>
+                <select value={servicesTitleEffect} onChange={(e) => setServicesTitleEffect(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none appearance-none text-xs font-bold text-center">
+                  <option value="none">Ninguno</option>
+                  <option value="glow">Glow</option>
+                  <option value="neon">Neon</option>
+                  <option value="3d">3D</option>
+                </select>
               </div>
             </div>
+            <button onClick={() => setServicesTitleGradient(!servicesTitleGradient)} className={`w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${servicesTitleGradient ? 'bg-accent-cyan text-black' : 'bg-white/5 text-white/20'}`}>
+              Degradado: {servicesTitleGradient ? 'ON' : 'OFF'}
+            </button>
           </div>
         </div>
       </section>
@@ -364,10 +406,10 @@ export default function ContentPage() {
         </div>
       </section>
 
-      {/* Servicios */}
+      {/* Servicios Manager */}
       <section className="space-y-8">
         <div className="flex items-center justify-between px-4">
-          <h2 className="text-4xl font-black tracking-tighter uppercase">Servicios</h2>
+          <h2 className="text-4xl font-black tracking-tighter uppercase">Listado de Servicios</h2>
           <button onClick={addService} className="px-8 py-3 glass rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all border-white/10">+ Nuevo Servicio</button>
         </div>
         <div className="grid gap-8">

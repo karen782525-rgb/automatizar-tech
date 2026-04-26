@@ -86,7 +86,16 @@ export default async function Home() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent-violet/10 blur-[120px] rounded-full" />
       </div>
 
-      <Services services={services} />
+      <Services 
+        services={services} 
+        title={settings.services_title}
+        subtitle={settings.services_subtitle}
+        titleColor={settings.services_title_color}
+        titleColor2={settings.services_title_color_2}
+        titleGradient={settings.services_title_gradient === 'true'}
+        titleSize={settings.services_title_size}
+        titleEffect={settings.services_title_effect}
+      />
       
       <ContactForm />
 
