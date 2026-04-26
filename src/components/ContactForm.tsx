@@ -10,6 +10,7 @@ const ContactForm = () => {
     name: '',
     company: '',
     email: '',
+    phone: '',
     need: '',
   });
   const [loading, setLoading] = useState(false);
@@ -19,17 +20,29 @@ const ContactForm = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase
-      .from('leads')
-      .insert([formData]);
+    try {
+      // 1. Guardar en Supabase
+      const { error: supabaseError } = await supabase
+        .from('leads')
+        .insert([formData]);
 
-    if (!error) {
+      if (supabaseError) throw supabaseError;
+
+      // 2. Enviar a n8n
+      await fetch('https://paneln8n.automatizar.tech/form/b36a9e47-1f38-4b4a-a523-c6c654abd18d', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
       setSubmitted(true);
-      setFormData({ name: '', company: '', email: '', need: '' });
-    } else {
-      alert('Error al enviar el formulario. Intenta de nuevo.');
+      setFormData({ name: '', company: '', email: '', phone: '', need: '' });
+    } catch (err) {
+      console.error(err);
+      alert('Hubo un problema al enviar el formulario. Por favor, intenta de nuevo.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -85,16 +98,29 @@ const ContactForm = () => {
                 </div>
               </div>
               
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Email</label>
-                <input
-                  required
-                  type="email"
-                  placeholder="email@ejemplo.com"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-cyan transition-colors"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Email</label>
+                  <input
+                    required
+                    type="email"
+                    placeholder="email@ejemplo.com"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-cyan transition-colors"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Teléfono / WhatsApp</label>
+                  <input
+                    required
+                    type="tel"
+                    placeholder="+57 300 000 0000"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-cyan transition-colors"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
