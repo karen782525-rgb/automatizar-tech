@@ -276,6 +276,18 @@ export default function ContentPage() {
         </div>
         
         <div className="space-y-16">
+          {/* Media & Global */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 rounded-[2rem] bg-black/20 border border-white/5">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-white/20 uppercase ml-2 tracking-widest flex items-center gap-2"><Video size={12}/> Video URL (Cloudinary)</label>
+              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold text-accent-cyan" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} placeholder="https://res.cloudinary.com/..." />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-white/20 uppercase ml-2 tracking-widest flex items-center gap-2"><Maximize size={12}/> Efectos (Transformaciones)</label>
+              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold" value={heroEffects} onChange={(e) => setHeroEffects(e.target.value)} placeholder="e_art:incognito, q_auto..." />
+            </div>
+          </div>
+
           {/* Tipografía dual */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="p-8 rounded-[2rem] bg-white/5 border border-white/10 space-y-6">
