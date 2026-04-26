@@ -26,9 +26,14 @@ export default function ContentPage() {
 
   const saveHero = async () => {
     setSaving(true);
-    await supabase.from('site_settings').upsert({ key: 'hero_video_url', value: heroVideo });
+    const { error } = await supabase.from('site_settings').upsert({ key: 'hero_video_url', value: heroVideo });
     setSaving(false);
-    alert('Hero actualizado');
+    if (error) {
+      console.error('Error saving hero:', error);
+      alert('Error: ' + error.message);
+    } else {
+      alert('Hero actualizado correctamente');
+    }
   };
 
   const updateService = async (id: string, field: string, value: any) => {
