@@ -107,28 +107,28 @@ const Hero = ({
 
       {/* Brand Marquee at the bottom */}
       {brands.length > 0 && (
-        <div className="absolute bottom-12 w-full z-20">
+        <div className="absolute bottom-16 md:bottom-24 w-full z-20">
           <div className="max-w-7xl mx-auto px-4">
-            <p className="text-center text-[10px] uppercase tracking-[0.3em] text-white/30 mb-8 font-bold">
-              Aliados Estratégicos
+            <p className="text-center text-[10px] md:text-xs uppercase tracking-[0.4em] text-white/40 mb-10 font-bold">
+              Marcas que confían en nosotros
             </p>
-            <div className="relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-20 before:bg-gradient-to-r before:from-black before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-20 after:bg-gradient-to-l after:after:from-black after:to-transparent">
+            <div className="relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-32 before:bg-gradient-to-r before:from-black before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-32 after:bg-gradient-to-l after:after:from-black after:to-transparent">
               <motion.div 
-                className="flex gap-20 items-center w-max"
+                className="flex gap-24 md:gap-32 items-center w-max"
                 animate={{ x: ["0%", "-50%"] }}
                 transition={{ 
-                  duration: 30, 
+                  duration: 25, 
                   repeat: Infinity, 
                   ease: "linear" 
                 }}
               >
                 {/* Double the brands for infinite loop effect */}
                 {[...brands, ...brands].map((brand, idx) => (
-                  <div key={`${brand.id}-${idx}`} className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-500 opacity-60 hover:opacity-100">
+                  <div key={`${brand.id}-${idx}`} className="flex items-center justify-center transition-all duration-500 opacity-90 hover:opacity-100 hover:scale-110">
                     <img 
                       src={brand.logo_url} 
                       alt={brand.name} 
-                      className="h-12 md:h-16 lg:h-20 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                      className="h-14 md:h-20 lg:h-24 w-auto object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] brightness-110 contrast-110"
                     />
                   </div>
                 ))}
