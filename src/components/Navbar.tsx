@@ -4,7 +4,54 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-const Navbar = () => {
+interface NavbarProps {
+  logoText?: string;
+  logoColor?: string;
+  logoColor2?: string;
+  logoGradient?: boolean;
+  logoSize?: string;
+  logoEffect?: string;
+}
+
+const Navbar = ({
+  logoText = 'automatizar.tech',
+  logoColor = '#00f2ff',
+  logoColor2 = '#9d50bb',
+  logoGradient = true,
+  logoSize = '1.5',
+  logoEffect = 'none'
+}: NavbarProps) => {
+  
+  const getLogoStyle = (): React.CSSProperties => {
+    const base: React.CSSProperties = {
+      fontSize: `${logoSize}rem`,
+      fontWeight: '900',
+      letterSpacing: '-0.05em'
+    };
+    
+    if (logoGradient) {
+      base.backgroundImage = `linear-gradient(to right, ${logoColor}, ${logoColor2})`;
+      base.WebkitBackgroundClip = 'text';
+      base.color = 'transparent';
+    } else {
+      base.color = logoColor;
+    }
+
+    switch (logoEffect) {
+      case 'glow':
+        base.filter = `drop-shadow(0 0 8px ${logoColor})`;
+        break;
+      case 'neon':
+        base.filter = `drop-shadow(0 0 2px #fff) drop-shadow(0 0 10px ${logoColor})`;
+        break;
+      case '3d':
+        base.textShadow = `2px 2px 0px rgba(0,0,0,0.5)`;
+        break;
+    }
+
+    return base;
+  };
+
   return (
     <motion.nav 
       initial={{ y: -100, opacity: 0 }}
@@ -12,9 +59,9 @@ const Navbar = () => {
       transition={{ duration: 0.8, ease: 'easeOut' }}
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 glass bg-black/20 backdrop-blur-md border-b border-white/5"
     >
-      <Link href="/" className="text-2xl font-bold tracking-tighter flex items-center gap-2">
-        <span className="bg-gradient-to-r from-accent-cyan to-accent-violet bg-clip-text text-transparent">
-          automatizar.tech
+      <Link href="/" className="flex items-center gap-2">
+        <span style={getLogoStyle()} className="transition-all duration-500 hover:scale-105 active:scale-95">
+          {logoText}
         </span>
       </Link>
 
@@ -23,7 +70,7 @@ const Navbar = () => {
         <Link href="#contacto" className="hover:text-accent-cyan transition-colors">Contacto</Link>
         <Link 
           href="/admin" 
-          className="px-4 py-2 rounded-full border border-white/10 hover:bg-white/5 transition-all"
+          className="px-4 py-2 rounded-full border border-white/10 hover:bg-white/5 transition-all text-[10px] tracking-widest uppercase font-bold"
         >
           Admin
         </Link>

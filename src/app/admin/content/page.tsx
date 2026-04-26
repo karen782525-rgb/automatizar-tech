@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Video, FileText, Type, Palette, Layout, Maximize } from 'lucide-react';
+import { Save, Plus, Trash2, Video, FileText, Type, Palette, Layout, Maximize, Smartphone } from 'lucide-react';
 
 export default function ContentPage() {
   const [heroVideo, setHeroVideo] = useState('');
@@ -12,6 +12,14 @@ export default function ContentPage() {
   const [heroTitleAccent, setHeroTitleAccent] = useState('');
   const [heroSubtitle, setHeroSubtitle] = useState('');
   
+  // Estilos Logo
+  const [logoText, setLogoText] = useState('automatizar.tech');
+  const [logoColor, setLogoColor] = useState('#00f2ff');
+  const [logoColor2, setLogoColor2] = useState('#9d50bb');
+  const [logoGradient, setLogoGradient] = useState(true);
+  const [logoEffect, setLogoEffect] = useState('none');
+  const [logoSize, setLogoSize] = useState('1.5');
+
   // Estilos Texto Principal (Procesos)
   const [heroMainColor, setHeroMainColor] = useState('#ffffff');
   const [heroMainColor2, setHeroMainColor2] = useState('#ffffff');
@@ -42,6 +50,13 @@ export default function ContentPage() {
           setHeroTitleAccent(settings.find(s => s.key === 'hero_title_accent')?.value || 'Inteligencia Artificial');
           setHeroSubtitle(settings.find(s => s.key === 'hero_subtitle')?.value || 'Soluciones de vanguardia...');
           
+          setLogoText(settings.find(s => s.key === 'logo_text')?.value || 'automatizar.tech');
+          setLogoColor(settings.find(s => s.key === 'logo_color')?.value || '#00f2ff');
+          setLogoColor2(settings.find(s => s.key === 'logo_color_2')?.value || '#9d50bb');
+          setLogoGradient(settings.find(s => s.key === 'logo_gradient')?.value === 'true');
+          setLogoEffect(settings.find(s => s.key === 'logo_effect')?.value || 'none');
+          setLogoSize(settings.find(s => s.key === 'logo_size')?.value || '1.5');
+
           setHeroMainColor(settings.find(s => s.key === 'hero_main_color')?.value || '#ffffff');
           setHeroMainColor2(settings.find(s => s.key === 'hero_main_color_2')?.value || '#ffffff');
           setHeroMainGradient(settings.find(s => s.key === 'hero_main_gradient')?.value === 'true');
@@ -69,7 +84,7 @@ export default function ContentPage() {
     fetchData();
   }, []);
 
-  const saveHero = async () => {
+  const saveAll = async () => {
     setSaving(true);
     const updates = [
       { key: 'hero_video_url', value: heroVideo },
@@ -78,6 +93,13 @@ export default function ContentPage() {
       { key: 'hero_title_accent', value: heroTitleAccent },
       { key: 'hero_subtitle', value: heroSubtitle },
       
+      { key: 'logo_text', value: logoText },
+      { key: 'logo_color', value: logoColor },
+      { key: 'logo_color_2', value: logoColor2 },
+      { key: 'logo_gradient', value: String(logoGradient) },
+      { key: 'logo_effect', value: logoEffect },
+      { key: 'logo_size', value: logoSize },
+
       { key: 'hero_main_color', value: heroMainColor },
       { key: 'hero_main_color_2', value: heroMainColor2 },
       { key: 'hero_main_gradient', value: String(heroMainGradient) },
@@ -93,7 +115,7 @@ export default function ContentPage() {
     const { error } = await supabase.from('site_settings').upsert(updates);
     setSaving(false);
     if (error) alert('Error: ' + error.message);
-    else alert('Cambios guardados con éxito');
+    else alert('Todo el contenido actualizado correctamente');
   };
 
   const addBrand = async () => {
@@ -136,17 +158,83 @@ export default function ContentPage() {
 
   return (
     <div className="space-y-12 pb-24 max-w-7xl mx-auto px-4">
-      <header>
-        <h1 className="text-4xl font-bold tracking-tighter">Gestión de Contenido</h1>
-        <p className="text-white/40 mt-2 text-sm uppercase tracking-widest">Control visual absoluto de tu plataforma</p>
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <h1 className="text-4xl font-bold tracking-tighter">Gestión de Contenido</h1>
+          <p className="text-white/40 mt-2 text-sm uppercase tracking-widest">Personalización total de la plataforma</p>
+        </div>
+        <button onClick={saveAll} disabled={saving} className="px-10 py-4 bg-accent-cyan text-black font-black rounded-2xl flex items-center justify-center gap-3 hover:shadow-[0_0_50px_rgba(0,242,255,0.4)] transition-all uppercase text-xs tracking-widest">
+          <Save size={18} /> {saving ? 'Guardando...' : 'Guardar Todo'}
+        </button>
       </header>
+
+      {/* Identidad de Marca (Logo) */}
+      <section className="glass p-8 rounded-[2.5rem] border-accent-violet/20 bg-accent-violet/5">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <Smartphone className="text-accent-violet" />
+            <h2 className="text-2xl font-bold">Identidad de Marca (Logo)</h2>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-white/20 uppercase ml-2">Texto del Logo</label>
+            <input className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold" value={logoText} onChange={(e) => setLogoText(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-white/20 uppercase ml-2">Tamaño Logo (rem)</label>
+            <input type="number" step="0.1" className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold text-accent-violet" value={logoSize} onChange={(e) => setLogoSize(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-white/20 uppercase ml-2">Efecto Especial</label>
+            <select value={logoEffect} onChange={(e) => setLogoEffect(e.target.value)} className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 outline-none appearance-none">
+              <option value="none">Ninguno</option>
+              <option value="glow">Glow</option>
+              <option value="neon">Neon</option>
+              <option value="3d">3D</option>
+            </select>
+          </div>
+        </div>
+        <div className="mt-6 flex items-center gap-8 bg-black/20 p-6 rounded-3xl border border-white/5">
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-1 items-center">
+              <span className="text-[8px] text-white/40 uppercase">Color 1</span>
+              <input type="color" value={logoColor} onChange={(e) => setLogoColor(e.target.value)} className="h-10 w-10 bg-transparent border-none cursor-pointer" />
+            </div>
+            {logoGradient && (
+              <div className="flex flex-col gap-1 items-center">
+                <span className="text-[8px] text-white/40 uppercase">Color 2</span>
+                <input type="color" value={logoColor2} onChange={(e) => setLogoColor2(e.target.value)} className="h-10 w-10 bg-transparent border-none cursor-pointer" />
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-3 border-l border-white/10 pl-8">
+            <span className="text-[10px] font-bold text-white/40 uppercase">Degradado</span>
+            <button onClick={() => setLogoGradient(!logoGradient)} className={`w-10 h-5 rounded-full relative transition-all ${logoGradient ? 'bg-accent-violet' : 'bg-white/10'}`}>
+              <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${logoGradient ? 'left-5.5' : 'left-0.5'}`} />
+            </button>
+          </div>
+          <div className="ml-auto text-sm text-white/20 font-mono flex items-center gap-4">
+            Previsualización: 
+            <span style={{ 
+              fontSize: `${logoSize}rem`, 
+              color: logoGradient ? 'transparent' : logoColor,
+              backgroundImage: logoGradient ? `linear-gradient(to right, ${logoColor}, ${logoColor2})` : 'none',
+              WebkitBackgroundClip: logoGradient ? 'text' : 'none',
+              filter: logoEffect === 'glow' ? `drop-shadow(0 0 5px ${logoColor})` : logoEffect === 'neon' ? `drop-shadow(0 0 10px ${logoColor})` : 'none'
+            }} className="font-black tracking-tighter">
+              {logoText}
+            </span>
+          </div>
+        </div>
+      </section>
 
       {/* Marcas Aliadas */}
       <section className="glass p-8 rounded-[2.5rem] border-white/10 bg-accent-cyan/5">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <Plus className="text-accent-cyan" />
-            <h2 className="text-2xl font-bold">Marcas Aliadas (Logos)</h2>
+            <h2 className="text-2xl font-bold">Aliados Estratégicos (Marcas)</h2>
           </div>
           <button onClick={addBrand} className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl flex items-center gap-2 transition-all border border-white/10">
             <Plus size={18} />
@@ -240,10 +328,10 @@ export default function ContentPage() {
                 </button>
               </div>
               <select value={heroMainEffect} onChange={(e) => setHeroMainEffect(e.target.value)} className="bg-black/20 border border-white/10 rounded-2xl px-6 outline-none text-sm appearance-none">
-                <option value="none" className="bg-black">Efecto: Ninguno</option>
-                <option value="glow" className="bg-black">Efecto: Glow</option>
-                <option value="neon" className="bg-black">Efecto: Neon</option>
-                <option value="3d" className="bg-black">Efecto: 3D</option>
+                <option value="none">Ninguno</option>
+                <option value="glow">Glow</option>
+                <option value="neon">Neon</option>
+                <option value="3d">3D</option>
               </select>
             </div>
           </div>
@@ -284,29 +372,25 @@ export default function ContentPage() {
                 </button>
               </div>
               <select value={heroAccentEffect} onChange={(e) => setHeroAccentEffect(e.target.value)} className="bg-black/20 border border-white/10 rounded-2xl px-6 outline-none text-sm appearance-none">
-                <option value="none" className="bg-black">Efecto: Ninguno</option>
-                <option value="glow" className="bg-black">Efecto: Glow</option>
-                <option value="neon" className="bg-black">Efecto: Neon</option>
-                <option value="3d" className="bg-black">Efecto: 3D</option>
+                <option value="none">Ninguno</option>
+                <option value="glow">Glow</option>
+                <option value="neon">Neon</option>
+                <option value="3d">3D</option>
               </select>
             </div>
           </div>
-
-          <button onClick={saveHero} disabled={saving} className="w-full py-6 bg-accent-cyan text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:shadow-[0_0_40px_rgba(0,242,255,0.3)] transition-all">
-            <Save size={18} /> {saving ? 'Guardando todos los cambios...' : 'Guardar Configuración del Banner'}
-          </button>
         </div>
       </section>
 
       {/* Services Management */}
       <section className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Servicios</h2>
-          <button onClick={addService} className="px-6 py-3 glass rounded-2xl font-bold hover:bg-white/10 transition-all">+ Añadir Servicio</button>
+          <h2 className="text-2xl font-bold">Catálogo de Servicios</h2>
+          <button onClick={addService} className="px-6 py-3 glass rounded-2xl font-bold hover:bg-white/10 transition-all border border-white/10 text-xs tracking-widest uppercase">+ Añadir Nuevo</button>
         </div>
         <div className="grid gap-6">
           {services.map((service) => (
-            <div key={service.id} className="glass p-8 rounded-[2rem] border-white/5 space-y-4">
+            <div key={service.id} className="glass p-8 rounded-[2.5rem] border-white/5 space-y-4">
               <div className="flex justify-between gap-4">
                 <input className="bg-transparent text-2xl font-bold w-full border-none p-0 focus:ring-0 outline-none" value={service.title} onBlur={(e) => updateService(service.id, 'title', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, title: e.target.value } : s))} />
                 <button onClick={() => deleteService(service.id)} className="text-red-400/20 hover:text-red-400 transition-colors"><Trash2 /></button>

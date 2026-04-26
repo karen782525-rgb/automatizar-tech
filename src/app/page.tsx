@@ -37,7 +37,14 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white selection:bg-accent-cyan selection:text-black">
-      <Navbar />
+      <Navbar 
+        logoText={settings.logo_text}
+        logoColor={settings.logo_color}
+        logoColor2={settings.logo_color_2}
+        logoGradient={settings.logo_gradient === 'true'}
+        logoSize={settings.logo_size}
+        logoEffect={settings.logo_effect}
+      />
       <Hero 
         videoUrl={settings.hero_video_url} 
         effects={settings.hero_video_effects}
