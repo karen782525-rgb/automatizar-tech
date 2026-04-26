@@ -6,7 +6,13 @@ import { motion } from 'framer-motion';
 import { Save, Plus, Trash2, Video, FileText } from 'lucide-react';
 
 export default function ContentPage() {
+  const [heroVideo, setHeroVideo] = useState('');
   const [heroEffects, setHeroEffects] = useState('');
+  const [heroTitleMain, setHeroTitleMain] = useState('');
+  const [heroTitleAccent, setHeroTitleAccent] = useState('');
+  const [heroSubtitle, setHeroSubtitle] = useState('');
+  const [heroAccentColor, setHeroAccentColor] = useState('');
+  const [heroTitleSize, setHeroTitleSize] = useState('');
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -16,6 +22,11 @@ export default function ContentPage() {
       const { data: settings } = await supabase.from('site_settings').select('*');
       setHeroVideo(settings?.find(s => s.key === 'hero_video_url')?.value || '');
       setHeroEffects(settings?.find(s => s.key === 'hero_video_effects')?.value || '');
+      setHeroTitleMain(settings?.find(s => s.key === 'hero_title_main')?.value || 'Potenciamos tu Equipo con');
+      setHeroTitleAccent(settings?.find(s => s.key === 'hero_title_accent')?.value || 'Inteligencia Artificial');
+      setHeroSubtitle(settings?.find(s => s.key === 'hero_subtitle')?.value || 'Soluciones de vanguardia para automatizar, escalar y transformar el futuro de tu negocio.');
+      setHeroAccentColor(settings?.find(s => s.key === 'hero_accent_color')?.value || '#00f2ff');
+      setHeroTitleSize(settings?.find(s => s.key === 'hero_title_size')?.value || '8');
 
       const { data: svcs } = await supabase.from('services').select('*').order('display_order');
       setServices(svcs || []);
@@ -26,11 +37,21 @@ export default function ContentPage() {
 
   const saveHero = async () => {
     setSaving(true);
-    const { error: err1 } = await supabase.from('site_settings').upsert({ key: 'hero_video_url', value: heroVideo });
-    const { error: err2 } = await supabase.from('site_settings').upsert({ key: 'hero_video_effects', value: heroEffects });
+    const updates = [
+      { key: 'hero_video_url', value: heroVideo },
+      { key: 'hero_video_effects', value: heroEffects },
+      { key: 'hero_title_main', value: heroTitleMain },
+      { key: 'hero_title_accent', value: heroTitleAccent },
+      { key: 'hero_subtitle', value: heroSubtitle },
+      { key: 'hero_accent_color', value: heroAccentColor },
+      { key: 'hero_title_size', value: heroTitleSize },
+    ];
+    
+    const { error } = await supabase.from('site_settings').upsert(updates);
     setSaving(false);
-    if (err1 || err2) {
-      alert('Error guardando: ' + (err1?.message || err2?.message));
+    
+    if (error) {
+      alert('Error guardando: ' + error.message);
     } else {
       alert('Configuración del Hero guardada');
     }
@@ -86,36 +107,103 @@ export default function ContentPage() {
           <Video className="text-accent-cyan" />
           <h2 className="text-xl font-bold">Video Principal (Hero)</h2>
         </div>
-        <div className="space-y-4">
-          <div className="flex gap-4">
-            <input
-              type="text"
-              placeholder="URL del video (Cloudinary mp4)"
-              className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-cyan"
-              value={heroVideo}
-              onChange={(e) => setHeroVideo(e.target.value)}
-            />
-            <button
-              onClick={saveHero}
-              disabled={saving}
-              className="px-8 py-4 bg-accent-cyan text-black font-bold rounded-2xl hover:scale-105 transition-all flex items-center gap-2"
-            >
-              <Save size={18} />
-              {saving ? 'Guardando...' : 'Guardar'}
-            </button>
+        <div className="space-y-6">
+          {/* Video Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-white/30 uppercase ml-1">URL del Video</label>
+              <input
+                type="text"
+                placeholder="URL de Cloudinary"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-cyan"
+                value={heroVideo}
+                onChange={(e) => setHeroVideo(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-white/30 uppercase ml-1">Efectos Cloudinary</label>
+              <input
+                type="text"
+                placeholder="ej: e_grayscale, e_blur:1000"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-violet"
+                value={heroEffects}
+                onChange={(e) => setHeroEffects(e.target.value)}
+              />
+            </div>
           </div>
-          <div className="flex gap-4 items-center">
-            <input
-              type="text"
-              placeholder="Efectos Cloudinary (ej: e_grayscale, e_blur:1000, e_cartoonify)"
-              className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-violet text-sm"
-              value={heroEffects}
-              onChange={(e) => setHeroEffects(e.target.value)}
-            />
-            <p className="text-xs text-white/30 max-w-[200px]">
-              Se aplican automáticamente a la URL de Cloudinary.
-            </p>
+
+          {/* Text Controls */}
+          <div className="space-y-4 pt-4 border-t border-white/5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-white/30 uppercase ml-1">Texto Principal</label>
+                <input
+                  type="text"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-cyan"
+                  value={heroTitleMain}
+                  onChange={(e) => setHeroTitleMain(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-white/30 uppercase ml-1">Texto Destacado (Color)</label>
+                <input
+                  type="text"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-cyan"
+                  value={heroTitleAccent}
+                  onChange={(e) => setHeroTitleAccent(e.target.value)}
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-white/30 uppercase ml-1">Subtítulo</label>
+              <textarea
+                rows={2}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-cyan resize-none"
+                value={heroSubtitle}
+                onChange={(e) => setHeroSubtitle(e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-white/30 uppercase ml-1">Color Acento</label>
+                <div className="flex gap-2">
+                  <input
+                    type="color"
+                    className="h-14 w-14 bg-transparent border-none cursor-pointer"
+                    value={heroAccentColor}
+                    onChange={(e) => setHeroAccentColor(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-2 focus:outline-none text-xs"
+                    value={heroAccentColor}
+                    onChange={(e) => setHeroAccentColor(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-white/30 uppercase ml-1">Tamaño Título (rem)</label>
+                <input
+                  type="number"
+                  step="0.5"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none"
+                  value={heroTitleSize}
+                  onChange={(e) => setHeroTitleSize(e.target.value)}
+                />
+              </div>
+            </div>
           </div>
+
+          <button
+            onClick={saveHero}
+            disabled={saving}
+            className="w-full py-5 bg-accent-cyan text-black font-bold rounded-2xl hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+          >
+            <Save size={18} />
+            {saving ? 'Guardando cambios...' : 'Guardar Configuración del Banner'}
+          </button>
         </div>
       </section>
 

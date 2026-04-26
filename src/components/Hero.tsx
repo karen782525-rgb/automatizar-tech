@@ -6,17 +6,25 @@ import { motion } from 'framer-motion';
 interface HeroProps {
   videoUrl?: string;
   effects?: string;
+  titleMain?: string;
+  titleAccent?: string;
+  subtitle?: string;
+  accentColor?: string;
+  titleSize?: string;
 }
 
 const Hero = ({ 
   videoUrl = "https://res.cloudinary.com/demo/video/upload/v1631234567/sample.mp4",
-  effects = ""
+  effects = "",
+  titleMain = "Potenciamos tu Equipo con",
+  titleAccent = "Inteligencia Artificial",
+  subtitle = "Soluciones de vanguardia para automatizar, escalar y transformar el futuro de tu negocio.",
+  accentColor = "#00f2ff",
+  titleSize = "8"
 }: HeroProps) => {
   // Function to inject Cloudinary effects into the URL
   const getTransformedUrl = (url: string, fx: string) => {
     if (!fx || !url.includes('cloudinary.com')) return url;
-    
-    // Cloudinary URLs: .../video/upload/[fx]/v123/id.mp4
     if (url.includes('/video/upload/')) {
       return url.replace('/video/upload/', `/video/upload/${fx}/`);
     }
@@ -50,14 +58,23 @@ const Hero = ({
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
-          <h1 className="text-5xl md:text-8xl font-extrabold tracking-tighter mb-6 leading-tight">
-            Potenciamos tu Equipo con{' '}
-            <span className="bg-gradient-to-r from-accent-cyan to-accent-violet bg-clip-text text-transparent">
-              Inteligencia Artificial
+          <h1 
+            style={{ fontSize: `${titleSize}rem` }}
+            className="text-5xl md:text-[length:var(--title-size)] font-extrabold tracking-tighter mb-6 leading-tight"
+          >
+            {titleMain}{' '}
+            <span 
+              style={{ 
+                backgroundImage: `linear-gradient(to right, ${accentColor}, #9d50bb)`,
+                WebkitBackgroundClip: 'text',
+                color: 'transparent'
+              }}
+            >
+              {titleAccent}
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-white/60 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            Soluciones de vanguardia para automatizar, escalar y transformar el futuro de tu negocio.
+            {subtitle}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.a

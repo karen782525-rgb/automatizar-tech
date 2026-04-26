@@ -39,6 +39,11 @@ export default async function Home() {
       <Hero 
         videoUrl={settings.hero_video_url} 
         effects={settings.hero_video_effects}
+        titleMain={settings.hero_title_main}
+        titleAccent={settings.hero_title_accent}
+        subtitle={settings.hero_subtitle}
+        accentColor={settings.hero_accent_color}
+        titleSize={settings.hero_title_size}
       />
       
       {/* Background Mesh Gradients */}
