@@ -34,11 +34,11 @@ CREATE POLICY "Authenticated users can read leads" ON leads FOR SELECT USING (au
 
 -- Policies for services
 CREATE POLICY "Anyone can view services" ON services FOR SELECT USING (true);
-CREATE POLICY "Authenticated users can manage services" ON services ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can manage services" ON services FOR ALL USING (auth.role() = 'authenticated');
 
 -- Policies for site_settings
 CREATE POLICY "Anyone can view settings" ON site_settings FOR SELECT USING (true);
-CREATE POLICY "Authenticated users can manage settings" ON site_settings ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can manage settings" ON site_settings FOR ALL USING (auth.role() = 'authenticated');
 
 -- Initial data
 INSERT INTO site_settings (key, value) VALUES ('hero_video_url', 'https://res.cloudinary.com/demo/video/upload/v1631234567/sample.mp4')
