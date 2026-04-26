@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface Brand {
@@ -181,14 +181,36 @@ const Hero = ({
         </motion.div>
       </div>
 
-      {/* Audio Toggle Button */}
-      <button 
+      {/* Audio Toggle Button - NEW MORE VISIBLE VERSION */}
+      <motion.button 
         onClick={() => setIsMuted(!isMuted)}
-        className="absolute bottom-8 right-8 z-30 p-4 glass rounded-full hover:bg-white/10 transition-all border border-white/5 text-white/60 hover:text-white"
-        title={isMuted ? "Activar sonido" : "Silenciar"}
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ 
+          scale: isMuted ? [1, 1.1, 1] : 1, 
+          opacity: 1,
+          borderColor: isMuted ? "rgba(0, 242, 255, 0.5)" : "rgba(255, 255, 255, 0.1)"
+        }}
+        transition={{ 
+          scale: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+          duration: 0.5
+        }}
+        className={`absolute bottom-32 md:bottom-40 right-8 z-40 flex items-center gap-3 px-6 py-4 glass rounded-full border transition-all shadow-[0_0_30px_rgba(0,242,255,0.1)] group ${isMuted ? 'text-accent-cyan' : 'text-white/60'}`}
       >
-        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-      </button>
+        <div className="relative">
+          {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+          {isMuted && (
+             <motion.div 
+               initial={{ scale: 0 }}
+               animate={{ scale: [1, 2, 1] }}
+               transition={{ duration: 1.5, repeat: Infinity }}
+               className="absolute inset-0 bg-accent-cyan/20 rounded-full -z-10"
+             />
+          )}
+        </div>
+        <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+          {isMuted ? "Activar Sonido" : "Silenciar"}
+        </span>
+      </motion.button>
 
       {/* Brand Marquee at the bottom */}
       {brands.length > 0 && (
