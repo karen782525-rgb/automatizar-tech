@@ -5,22 +5,39 @@ import { motion } from 'framer-motion';
 
 interface HeroProps {
   videoUrl?: string;
+  effects?: string;
 }
 
-const Hero = ({ videoUrl = "https://res.cloudinary.com/demo/video/upload/v1631234567/sample.mp4" }: HeroProps) => {
+const Hero = ({ 
+  videoUrl = "https://res.cloudinary.com/demo/video/upload/v1631234567/sample.mp4",
+  effects = ""
+}: HeroProps) => {
+  // Function to inject Cloudinary effects into the URL
+  const getTransformedUrl = (url: string, fx: string) => {
+    if (!fx || !url.includes('cloudinary.com')) return url;
+    
+    // Cloudinary URLs: .../video/upload/[fx]/v123/id.mp4
+    if (url.includes('/video/upload/')) {
+      return url.replace('/video/upload/', `/video/upload/${fx}/`);
+    }
+    return url;
+  };
+
+  const finalVideoUrl = getTransformedUrl(videoUrl, effects);
+
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video
-          key={videoUrl}
+          key={finalVideoUrl}
           autoPlay
           loop
           muted
           playsInline
           className="h-full w-full object-cover opacity-40"
         >
-          <source src={videoUrl} type="video/mp4" />
+          <source src={finalVideoUrl} type="video/mp4" />
         </video>
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />

@@ -36,7 +36,10 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-black text-white selection:bg-accent-cyan selection:text-black">
       <Navbar />
-      <Hero videoUrl={settings.hero_video_url} />
+      <Hero 
+        videoUrl={settings.hero_video_url} 
+        effects={settings.hero_video_effects}
+      />
       
       {/* Background Mesh Gradients */}
       <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
