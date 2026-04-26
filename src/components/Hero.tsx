@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Volume2, VolumeX } from 'lucide-react';
 
 interface Brand {
   id: string;
@@ -74,6 +75,8 @@ const Hero = ({
 
   brands = []
 }: HeroProps) => {
+  const [isMuted, setIsMuted] = useState(true);
+
   // Function to inject Cloudinary effects into the URL
   const getTransformedUrl = (url: string, fx: string) => {
     if (!fx || !url.includes('cloudinary.com')) return url;
@@ -121,7 +124,7 @@ const Hero = ({
           key={finalVideoUrl}
           autoPlay
           loop
-          muted
+          muted={isMuted}
           playsInline
           className="h-full w-full object-cover opacity-40"
         >
@@ -177,6 +180,15 @@ const Hero = ({
           </div>
         </motion.div>
       </div>
+
+      {/* Audio Toggle Button */}
+      <button 
+        onClick={() => setIsMuted(!isMuted)}
+        className="absolute bottom-8 right-8 z-30 p-4 glass rounded-full hover:bg-white/10 transition-all border border-white/5 text-white/60 hover:text-white"
+        title={isMuted ? "Activar sonido" : "Silenciar"}
+      >
+        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+      </button>
 
       {/* Brand Marquee at the bottom */}
       {brands.length > 0 && (
