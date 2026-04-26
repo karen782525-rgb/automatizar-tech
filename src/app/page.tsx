@@ -44,10 +44,19 @@ export default async function Home() {
         titleMain={settings.hero_title_main}
         titleAccent={settings.hero_title_accent}
         subtitle={settings.hero_subtitle}
+        
+        // Estilos Main
+        mainColor={settings.hero_main_color}
+        mainColor2={settings.hero_main_color_2}
+        mainGradient={settings.hero_main_gradient === 'true'}
+        mainEffect={settings.hero_main_effect}
+
+        // Estilos Accent
         accentColor={settings.hero_accent_color}
         accentColor2={settings.hero_accent_color_2}
-        isGradient={settings.hero_title_gradient === 'true'}
-        textEffect={settings.hero_title_effect}
+        accentGradient={settings.hero_accent_gradient === 'true'}
+        accentEffect={settings.hero_accent_effect}
+
         titleSize={settings.hero_title_size}
         brands={brands || []}
       />

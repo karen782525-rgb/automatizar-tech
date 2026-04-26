@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Video, FileText, Type, Palette } from 'lucide-react';
+import { Save, Plus, Trash2, Video, FileText, Type, Palette, Layout } from 'lucide-react';
 
 export default function ContentPage() {
   const [heroVideo, setHeroVideo] = useState('');
@@ -11,11 +11,20 @@ export default function ContentPage() {
   const [heroTitleMain, setHeroTitleMain] = useState('');
   const [heroTitleAccent, setHeroTitleAccent] = useState('');
   const [heroSubtitle, setHeroSubtitle] = useState('');
-  const [heroAccentColor, setHeroAccentColor] = useState('');
-  const [heroAccentColor2, setHeroAccentColor2] = useState('');
-  const [heroTitleSize, setHeroTitleSize] = useState('');
-  const [heroTitleGradient, setHeroTitleGradient] = useState(true);
-  const [heroTitleEffect, setHeroTitleEffect] = useState('none');
+  
+  // Estilos Texto Principal (Procesos)
+  const [heroMainColor, setHeroMainColor] = useState('#ffffff');
+  const [heroMainColor2, setHeroMainColor2] = useState('#ffffff');
+  const [heroMainGradient, setHeroMainGradient] = useState(false);
+  const [heroMainEffect, setHeroMainEffect] = useState('none');
+
+  // Estilos Texto Destacado (Inteligentes)
+  const [heroAccentColor, setHeroAccentColor] = useState('#00f2ff');
+  const [heroAccentColor2, setHeroAccentColor2] = useState('#9d50bb');
+  const [heroAccentGradient, setHeroAccentGradient] = useState(true);
+  const [heroAccentEffect, setHeroAccentEffect] = useState('none');
+
+  const [heroTitleSize, setHeroTitleSize] = useState('8');
   const [brands, setBrands] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,11 +40,18 @@ export default function ContentPage() {
           setHeroTitleMain(settings.find(s => s.key === 'hero_title_main')?.value || 'Potenciamos tu Equipo con');
           setHeroTitleAccent(settings.find(s => s.key === 'hero_title_accent')?.value || 'Inteligencia Artificial');
           setHeroSubtitle(settings.find(s => s.key === 'hero_subtitle')?.value || 'Soluciones de vanguardia...');
+          
+          setHeroMainColor(settings.find(s => s.key === 'hero_main_color')?.value || '#ffffff');
+          setHeroMainColor2(settings.find(s => s.key === 'hero_main_color_2')?.value || '#ffffff');
+          setHeroMainGradient(settings.find(s => s.key === 'hero_main_gradient')?.value === 'true');
+          setHeroMainEffect(settings.find(s => s.key === 'hero_main_effect')?.value || 'none');
+
           setHeroAccentColor(settings.find(s => s.key === 'hero_accent_color')?.value || '#00f2ff');
           setHeroAccentColor2(settings.find(s => s.key === 'hero_accent_color_2')?.value || '#9d50bb');
+          setHeroAccentGradient(settings.find(s => s.key === 'hero_accent_gradient')?.value === 'true');
+          setHeroAccentEffect(settings.find(s => s.key === 'hero_accent_effect')?.value || 'none');
+
           setHeroTitleSize(settings.find(s => s.key === 'hero_title_size')?.value || '8');
-          setHeroTitleGradient(settings.find(s => s.key === 'hero_title_gradient')?.value === 'true');
-          setHeroTitleEffect(settings.find(s => s.key === 'hero_title_effect')?.value || 'none');
         }
 
         const { data: svcs } = await supabase.from('services').select('*').order('display_order');
@@ -60,11 +76,18 @@ export default function ContentPage() {
       { key: 'hero_title_main', value: heroTitleMain },
       { key: 'hero_title_accent', value: heroTitleAccent },
       { key: 'hero_subtitle', value: heroSubtitle },
+      
+      { key: 'hero_main_color', value: heroMainColor },
+      { key: 'hero_main_color_2', value: heroMainColor2 },
+      { key: 'hero_main_gradient', value: String(heroMainGradient) },
+      { key: 'hero_main_effect', value: heroMainEffect },
+
       { key: 'hero_accent_color', value: heroAccentColor },
       { key: 'hero_accent_color_2', value: heroAccentColor2 },
+      { key: 'hero_accent_gradient', value: String(heroAccentGradient) },
+      { key: 'hero_accent_effect', value: heroAccentEffect },
+
       { key: 'hero_title_size', value: heroTitleSize },
-      { key: 'hero_title_gradient', value: String(heroTitleGradient) },
-      { key: 'hero_title_effect', value: heroTitleEffect },
     ];
     const { error } = await supabase.from('site_settings').upsert(updates);
     setSaving(false);
@@ -114,7 +137,7 @@ export default function ContentPage() {
     <div className="space-y-12 pb-24 max-w-7xl mx-auto px-4">
       <header>
         <h1 className="text-4xl font-bold tracking-tighter">Gestión de Contenido</h1>
-        <p className="text-white/40 mt-2">Personaliza logos, videos y estilos tipográficos</p>
+        <p className="text-white/40 mt-2 text-sm uppercase tracking-widest">Personaliza cada detalle de tu plataforma</p>
       </header>
 
       {/* Marcas Aliadas */}
@@ -160,90 +183,116 @@ export default function ContentPage() {
       <section className="glass p-8 rounded-[2.5rem] border-white/10">
         <div className="flex items-center gap-3 mb-8">
           <Type className="text-accent-cyan" />
-          <h2 className="text-2xl font-bold">Banner Principal & Estilos</h2>
+          <h2 className="text-2xl font-bold">Banner Principal (Hero)</h2>
         </div>
         
-        <div className="space-y-8">
-          {/* Controles de Video */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/20 uppercase ml-2">URL del Video Background</label>
-              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none" placeholder="URL Video" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/20 uppercase ml-2">Efectos Cloudinary</label>
-              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none" placeholder="ej: e_grayscale, e_blur:1000" value={heroEffects} onChange={(e) => setHeroEffects(e.target.value)} />
-            </div>
-          </div>
-
-          {/* Controles de Texto */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-white/5">
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/20 uppercase ml-2">Texto Principal</label>
-              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none" value={heroTitleMain} onChange={(e) => setHeroTitleMain(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/20 uppercase ml-2">Texto Destacado</label>
-              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none" value={heroTitleAccent} onChange={(e) => setHeroTitleAccent(e.target.value)} />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-white/20 uppercase ml-2">Subtítulo</label>
-            <textarea className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 h-24 focus:border-accent-cyan outline-none resize-none" value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} />
-          </div>
-
-          {/* Diseño Tipográfico y Colores */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-6 border-t border-white/5">
+        <div className="space-y-12">
+          {/* Controles de Contenido Base */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-4">
-              <label className="text-xs font-bold text-white/20 uppercase ml-2 flex items-center gap-2">
-                <Palette size={14} /> Colores del Texto
-              </label>
-              <div className="flex items-center gap-4">
-                <div className="flex flex-col gap-2">
-                  <span className="text-[10px] text-white/40 text-center">Color 1</span>
-                  <input type="color" value={heroAccentColor} onChange={(e) => setHeroAccentColor(e.target.value)} className="h-14 w-14 bg-transparent border-none cursor-pointer" />
-                </div>
-                {heroTitleGradient && (
-                  <div className="flex flex-col gap-2">
-                    <span className="text-[10px] text-white/40 text-center">Color 2</span>
-                    <input type="color" value={heroAccentColor2} onChange={(e) => setHeroAccentColor2(e.target.value)} className="h-14 w-14 bg-transparent border-none cursor-pointer" />
-                  </div>
-                )}
-                <div className="flex flex-col gap-2 ml-4">
-                  <span className="text-[10px] text-white/40">Usar Degradado</span>
-                  <button 
-                    onClick={() => setHeroTitleGradient(!heroTitleGradient)}
-                    className={`w-12 h-6 rounded-full transition-all relative ${heroTitleGradient ? 'bg-accent-cyan' : 'bg-white/10'}`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${heroTitleGradient ? 'left-7' : 'left-1'}`} />
-                  </button>
-                </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Video URL (Cloudinary)</label>
+                <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Subtítulo</label>
+                <textarea className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 h-24 outline-none resize-none" value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} />
               </div>
             </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/20 uppercase ml-2">Tamaño del Título (rem)</label>
-              <input type="number" step="0.5" value={heroTitleSize} onChange={(e) => setHeroTitleSize(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none" />
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Efectos Video</label>
+                <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" placeholder="ej: e_grayscale" value={heroEffects} onChange={(e) => setHeroEffects(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-white/20 uppercase ml-2 tracking-widest">Tamaño Global Título (rem)</label>
+                <input type="number" step="0.5" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroTitleSize} onChange={(e) => setHeroTitleSize(e.target.value)} />
+              </div>
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/20 uppercase ml-2">Efecto Especial</label>
-              <select 
-                value={heroTitleEffect} 
-                onChange={(e) => setHeroTitleEffect(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none appearance-none"
-              >
-                <option value="none" className="bg-black">Ninguno</option>
-                <option value="glow" className="bg-black">Glow (Brillo)</option>
-                <option value="neon" className="bg-black">Neon (Luz intensa)</option>
-                <option value="3d" className="bg-black">Sombra 3D</option>
+          {/* ESTILO TEXTO 1 (PROCESOS) */}
+          <div className="p-8 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+            <div className="flex items-center gap-3 border-b border-white/5 pb-4">
+              <Layout size={18} className="text-white/40" />
+              <h3 className="font-bold text-white/80">Estilo del Texto Principal (Ej: "Procesos")</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-white/20 uppercase ml-2">Texto</label>
+                <input className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroTitleMain} onChange={(e) => setHeroTitleMain(e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-white/20 uppercase ml-2 text-center block">Color Base</label>
+                  <input type="color" className="w-full h-12 bg-transparent cursor-pointer" value={heroMainColor} onChange={(e) => setHeroMainColor(e.target.value)} />
+                </div>
+                {heroMainGradient && (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-white/20 uppercase ml-2 text-center block">Color 2</label>
+                    <input type="color" className="w-full h-12 bg-transparent cursor-pointer" value={heroMainColor2} onChange={(e) => setHeroMainColor2(e.target.value)} />
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex items-center justify-between bg-black/20 p-4 rounded-2xl border border-white/5">
+                <span className="text-xs font-bold text-white/40 uppercase">Usar Degradado</span>
+                <button onClick={() => setHeroMainGradient(!heroMainGradient)} className={`w-12 h-6 rounded-full relative transition-all ${heroMainGradient ? 'bg-accent-cyan' : 'bg-white/10'}`}>
+                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${heroMainGradient ? 'left-7' : 'left-1'}`} />
+                </button>
+              </div>
+              <select value={heroMainEffect} onChange={(e) => setHeroMainEffect(e.target.value)} className="bg-black/20 border border-white/10 rounded-2xl px-6 outline-none text-sm appearance-none">
+                <option value="none" className="bg-black">Efecto: Ninguno</option>
+                <option value="glow" className="bg-black">Efecto: Glow</option>
+                <option value="neon" className="bg-black">Efecto: Neon</option>
+                <option value="3d" className="bg-black">Efecto: 3D</option>
               </select>
             </div>
           </div>
 
-          <button onClick={saveHero} disabled={saving} className="w-full py-5 bg-accent-cyan text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:scale-[1.01] transition-all">
-            <Save size={18} /> {saving ? 'Guardando cambios...' : 'Guardar Configuración del Banner'}
+          {/* ESTILO TEXTO 2 (INTELIGENTES) */}
+          <div className="p-8 rounded-3xl bg-accent-cyan/5 border border-accent-cyan/10 space-y-6">
+            <div className="flex items-center gap-3 border-b border-white/5 pb-4">
+              <Palette size={18} className="text-accent-cyan" />
+              <h3 className="font-bold text-accent-cyan/80">Estilo del Texto Destacado (Ej: "Inteligentes")</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-white/20 uppercase ml-2">Texto</label>
+                <input className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 outline-none" value={heroTitleAccent} onChange={(e) => setHeroTitleAccent(e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-white/20 uppercase ml-2 text-center block">Color Base</label>
+                  <input type="color" className="w-full h-12 bg-transparent cursor-pointer" value={heroAccentColor} onChange={(e) => setHeroAccentColor(e.target.value)} />
+                </div>
+                {heroAccentGradient && (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-white/20 uppercase ml-2 text-center block">Color 2</label>
+                    <input type="color" className="w-full h-12 bg-transparent cursor-pointer" value={heroAccentColor2} onChange={(e) => setHeroAccentColor2(e.target.value)} />
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex items-center justify-between bg-black/20 p-4 rounded-2xl border border-white/5">
+                <span className="text-xs font-bold text-white/40 uppercase">Usar Degradado</span>
+                <button onClick={() => setHeroAccentGradient(!heroAccentGradient)} className={`w-12 h-6 rounded-full relative transition-all ${heroAccentGradient ? 'bg-accent-cyan' : 'bg-white/10'}`}>
+                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${heroAccentGradient ? 'left-7' : 'left-1'}`} />
+                </button>
+              </div>
+              <select value={heroAccentEffect} onChange={(e) => setHeroAccentEffect(e.target.value)} className="bg-black/20 border border-white/10 rounded-2xl px-6 outline-none text-sm appearance-none">
+                <option value="none" className="bg-black">Efecto: Ninguno</option>
+                <option value="glow" className="bg-black">Efecto: Glow</option>
+                <option value="neon" className="bg-black">Efecto: Neon</option>
+                <option value="3d" className="bg-black">Efecto: 3D</option>
+              </select>
+            </div>
+          </div>
+
+          <button onClick={saveHero} disabled={saving} className="w-full py-6 bg-accent-cyan text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:shadow-[0_0_40px_rgba(0,242,255,0.3)] transition-all">
+            <Save size={18} /> {saving ? 'Guardando todos los cambios...' : 'Guardar Configuración del Banner'}
           </button>
         </div>
       </section>

@@ -15,10 +15,19 @@ interface HeroProps {
   titleMain?: string;
   titleAccent?: string;
   subtitle?: string;
+  
+  // Main Text Styles
+  mainColor?: string;
+  mainColor2?: string;
+  mainGradient?: boolean;
+  mainEffect?: string;
+
+  // Accent Text Styles
   accentColor?: string;
   accentColor2?: string;
-  isGradient?: boolean;
-  textEffect?: string;
+  accentGradient?: boolean;
+  accentEffect?: string;
+
   titleSize?: string;
   brands?: Brand[];
 }
@@ -29,10 +38,17 @@ const Hero = ({
   titleMain = "Potenciamos tu Equipo con",
   titleAccent = "Inteligencia Artificial",
   subtitle = "Soluciones de vanguardia para automatizar, escalar y transformar el futuro de tu negocio.",
+  
+  mainColor = "#ffffff",
+  mainColor2 = "#ffffff",
+  mainGradient = false,
+  mainEffect = "none",
+
   accentColor = "#00f2ff",
   accentColor2 = "#9d50bb",
-  isGradient = true,
-  textEffect = "none",
+  accentGradient = true,
+  accentEffect = "none",
+
   titleSize = "8",
   brands = []
 }: HeroProps) => {
@@ -47,25 +63,23 @@ const Hero = ({
 
   const finalVideoUrl = getTransformedUrl(videoUrl, effects);
 
-  // Define text styles based on props
-  const getAccentStyle = (): React.CSSProperties => {
+  const getTextStyle = (isGrad: boolean, col1: string, col2: string, effect: string): React.CSSProperties => {
     const base: React.CSSProperties = {};
     
-    if (isGradient) {
-      base.backgroundImage = `linear-gradient(to right, ${accentColor}, ${accentColor2})`;
+    if (isGrad) {
+      base.backgroundImage = `linear-gradient(to right, ${col1}, ${col2})`;
       base.WebkitBackgroundClip = 'text';
       base.color = 'transparent';
     } else {
-      base.color = accentColor;
+      base.color = col1;
     }
 
-    // Apply effects
-    switch (textEffect) {
+    switch (effect) {
       case 'glow':
-        base.filter = `drop-shadow(0 0 10px ${accentColor})`;
+        base.filter = `drop-shadow(0 0 10px ${col1})`;
         break;
       case 'neon':
-        base.filter = `drop-shadow(0 0 5px #fff) drop-shadow(0 0 20px ${accentColor})`;
+        base.filter = `drop-shadow(0 0 5px #fff) drop-shadow(0 0 20px ${col1})`;
         break;
       case '3d':
         base.textShadow = `3px 3px 0px rgba(0,0,0,0.3), 6px 6px 0px rgba(0,0,0,0.1)`;
@@ -104,8 +118,11 @@ const Hero = ({
             style={{ fontSize: `${titleSize}rem` }}
             className="text-5xl md:text-[length:var(--title-size)] font-extrabold tracking-tighter mb-6 leading-tight"
           >
-            {titleMain}{' '}
-            <span style={getAccentStyle()} className="inline-block">
+            <span style={getTextStyle(mainGradient, mainColor, mainColor2, mainEffect)} className="inline-block">
+              {titleMain}
+            </span>
+            {' '}
+            <span style={getTextStyle(accentGradient, accentColor, accentColor2, accentEffect)} className="inline-block">
               {titleAccent}
             </span>
           </h1>
