@@ -13,7 +13,7 @@ export default function ContentPage() {
   const [heroSubtitle, setHeroSubtitle] = useState('');
   const [heroAccentColor, setHeroAccentColor] = useState('');
   const [heroTitleSize, setHeroTitleSize] = useState('');
-  const [services, setServices] = useState<any[]>([]);
+  const [brands, setBrands] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -30,6 +30,10 @@ export default function ContentPage() {
 
       const { data: svcs } = await supabase.from('services').select('*').order('display_order');
       setServices(svcs || []);
+
+      const { data: bnds } = await supabase.from('brands').select('*').order('display_order');
+      setBrands(bnds || []);
+
       setLoading(false);
     }
     fetchData();
@@ -55,6 +59,29 @@ export default function ContentPage() {
     } else {
       alert('Configuración del Hero guardada');
     }
+  };
+
+  const updateBrand = async (id: string, field: string, value: any) => {
+    const { error } = await supabase.from('brands').update({ [field]: value }).eq('id', id);
+    if (error) {
+      alert('Error: ' + error.message);
+    } else {
+      setBrands(brands.map(b => b.id === id ? { ...b, [field]: value } : b));
+    }
+  };
+
+  const addBrand = async () => {
+    const newBrand = { name: 'Nueva Marca', logo_url: '', display_order: brands.length + 1 };
+    const { data, error } = await supabase.from('brands').insert([newBrand]).select();
+    if (error) alert(error.message);
+    else if (data) setBrands([...brands, data[0]]);
+  };
+
+  const deleteBrand = async (id: string) => {
+    if (!confirm('¿Eliminar marca?')) return;
+    const { error } = await supabase.from('brands').delete().eq('id', id);
+    if (error) alert(error.message);
+    else setBrands(brands.filter(b => b.id !== id));
   };
 
   const updateService = async (id: string, field: string, value: any) => {
@@ -204,6 +231,55 @@ export default function ContentPage() {
             <Save size={18} />
             {saving ? 'Guardando cambios...' : 'Guardar Configuración del Banner'}
           </button>
+        </div>
+      </section>
+
+      {/* Brands Management */}
+      <section className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Plus className="text-accent-cyan" />
+            <h2 className="text-xl font-bold">Marcas Aliadas (Logos)</h2>
+          </div>
+          <button
+            onClick={addBrand}
+            className="px-6 py-3 glass hover:bg-white/10 text-white font-bold rounded-2xl flex items-center gap-2 transition-all"
+          >
+            <Plus size={18} />
+            Añadir Marca
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {brands.map((brand) => (
+            <div key={brand.id} className="glass p-6 rounded-3xl border-white/5 space-y-4">
+              <div className="flex justify-between items-center">
+                <input
+                  type="text"
+                  className="bg-transparent font-bold border-none focus:ring-0 p-0 text-white/80"
+                  value={brand.name}
+                  onBlur={(e) => updateBrand(brand.id, 'name', e.target.value)}
+                  onChange={(e) => setBrands(brands.map(b => b.id === brand.id ? { ...b, name: e.target.value } : b))}
+                />
+                <button onClick={() => deleteBrand(brand.id)} className="text-red-400/40 hover:text-red-400">
+                  <Trash2 size={18} />
+                </button>
+              </div>
+              <input
+                type="text"
+                placeholder="URL del logo (transparente recomendado)"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs focus:outline-none"
+                value={brand.logo_url}
+                onBlur={(e) => updateBrand(brand.id, 'logo_url', e.target.value)}
+                onChange={(e) => setBrands(brands.map(b => b.id === brand.id ? { ...b, logo_url: e.target.value } : b))}
+              />
+              {brand.logo_url && (
+                <div className="h-12 flex items-center justify-center bg-white/5 rounded-xl p-2">
+                  <img src={brand.logo_url} alt={brand.name} className="h-full object-contain filter grayscale invert brightness-200" />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 

@@ -33,6 +33,8 @@ export default async function Home() {
     getSettings()
   ]);
 
+  const { data: brands } = await supabase.from('brands').select('*').order('display_order');
+
   return (
     <main className="min-h-screen bg-black text-white selection:bg-accent-cyan selection:text-black">
       <Navbar />
@@ -44,6 +46,7 @@ export default async function Home() {
         subtitle={settings.hero_subtitle}
         accentColor={settings.hero_accent_color}
         titleSize={settings.hero_title_size}
+        brands={brands || []}
       />
       
       {/* Background Mesh Gradients */}

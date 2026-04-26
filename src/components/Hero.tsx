@@ -3,6 +3,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+interface Brand {
+  id: string;
+  name: string;
+  logo_url: string;
+}
+
 interface HeroProps {
   videoUrl?: string;
   effects?: string;
@@ -11,6 +17,7 @@ interface HeroProps {
   subtitle?: string;
   accentColor?: string;
   titleSize?: string;
+  brands?: Brand[];
 }
 
 const Hero = ({ 
@@ -20,7 +27,8 @@ const Hero = ({
   titleAccent = "Inteligencia Artificial",
   subtitle = "Soluciones de vanguardia para automatizar, escalar y transformar el futuro de tu negocio.",
   accentColor = "#00f2ff",
-  titleSize = "8"
+  titleSize = "8",
+  brands = []
 }: HeroProps) => {
   // Function to inject Cloudinary effects into the URL
   const getTransformedUrl = (url: string, fx: string) => {
@@ -58,6 +66,20 @@ const Hero = ({
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
+          {/* Brands Section */}
+          {brands.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-8 mb-12 opacity-50 hover:opacity-100 transition-opacity">
+              {brands.map((brand) => (
+                <img 
+                  key={brand.id}
+                  src={brand.logo_url} 
+                  alt={brand.name} 
+                  className="h-6 md:h-8 object-contain filter grayscale invert brightness-200"
+                />
+              ))}
+            </div>
+          )}
+
           <h1 
             style={{ fontSize: `${titleSize}rem` }}
             className="text-5xl md:text-[length:var(--title-size)] font-extrabold tracking-tighter mb-6 leading-tight"
