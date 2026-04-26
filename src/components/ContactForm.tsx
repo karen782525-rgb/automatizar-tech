@@ -28,8 +28,8 @@ const ContactForm = () => {
 
       if (supabaseError) throw supabaseError;
 
-      // 2. Enviar a n8n
-      await fetch('https://paneln8n.automatizar.tech/form/b36a9e47-1f38-4b4a-a523-c6c654abd18d', {
+      // 2. Enviar a n8n (Webhook)
+      await fetch('https://paneln8n.automatizar.tech/webhook/contacto-web', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
