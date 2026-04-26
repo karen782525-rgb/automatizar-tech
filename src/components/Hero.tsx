@@ -66,25 +66,6 @@ const Hero = ({
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
-          {/* Brands Section */}
-          {brands.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-12 mb-16 px-6">
-              {brands.map((brand) => (
-                <motion.div
-                  key={brand.id}
-                  whileHover={{ scale: 1.1 }}
-                  className="relative group"
-                >
-                  <img 
-                    src={brand.logo_url} 
-                    alt={brand.name} 
-                    className="h-12 md:h-16 w-auto object-contain transition-all duration-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
-                  />
-                </motion.div>
-              ))}
-            </div>
-          )}
-
           <h1 
             style={{ fontSize: `${titleSize}rem` }}
             className="text-5xl md:text-[length:var(--title-size)] font-extrabold tracking-tighter mb-6 leading-tight"
@@ -108,7 +89,7 @@ const Hero = ({
               href="#contacto"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-accent-cyan text-black font-bold rounded-full hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all duration-300"
+              className="px-8 py-4 bg-accent-cyan text-black font-bold rounded-2xl hover:shadow-[0_0_30px_rgba(0,242,255,0.4)] transition-all"
             >
               Comenzar Ahora
             </motion.a>
@@ -116,7 +97,7 @@ const Hero = ({
               href="#servicios"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 glass text-white font-bold rounded-full hover:bg-white/10 transition-all duration-300"
+              className="px-8 py-4 glass border-white/10 text-white font-bold rounded-2xl hover:bg-white/5 transition-all"
             >
               Ver Servicios
             </motion.a>
@@ -124,7 +105,40 @@ const Hero = ({
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Brand Marquee at the bottom */}
+      {brands.length > 0 && (
+        <div className="absolute bottom-12 w-full z-20">
+          <div className="max-w-7xl mx-auto px-4">
+            <p className="text-center text-[10px] uppercase tracking-[0.3em] text-white/30 mb-8 font-bold">
+              Aliados Estratégicos
+            </p>
+            <div className="relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-20 before:bg-gradient-to-r before:from-black before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-20 after:bg-gradient-to-l after:after:from-black after:to-transparent">
+              <motion.div 
+                className="flex gap-20 items-center w-max"
+                animate={{ x: ["0%", "-50%"] }}
+                transition={{ 
+                  duration: 30, 
+                  repeat: Infinity, 
+                  ease: "linear" 
+                }}
+              >
+                {/* Double the brands for infinite loop effect */}
+                {[...brands, ...brands].map((brand, idx) => (
+                  <div key={`${brand.id}-${idx}`} className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-500 opacity-60 hover:opacity-100">
+                    <img 
+                      src={brand.logo_url} 
+                      alt={brand.name} 
+                      className="h-12 md:h-16 lg:h-20 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                    />
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Scroll Indicator */}
       <motion.div 
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
