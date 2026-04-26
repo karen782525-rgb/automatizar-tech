@@ -45,6 +45,9 @@ export default async function Home() {
         titleAccent={settings.hero_title_accent}
         subtitle={settings.hero_subtitle}
         accentColor={settings.hero_accent_color}
+        accentColor2={settings.hero_accent_color_2}
+        isGradient={settings.hero_title_gradient === 'true'}
+        textEffect={settings.hero_title_effect}
         titleSize={settings.hero_title_size}
         brands={brands || []}
       />

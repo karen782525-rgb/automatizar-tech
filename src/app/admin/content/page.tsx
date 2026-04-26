@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Video, FileText } from 'lucide-react';
+import { Save, Plus, Trash2, Video, FileText, Type, Palette } from 'lucide-react';
 
 export default function ContentPage() {
   const [heroVideo, setHeroVideo] = useState('');
@@ -12,7 +12,10 @@ export default function ContentPage() {
   const [heroTitleAccent, setHeroTitleAccent] = useState('');
   const [heroSubtitle, setHeroSubtitle] = useState('');
   const [heroAccentColor, setHeroAccentColor] = useState('');
+  const [heroAccentColor2, setHeroAccentColor2] = useState('');
   const [heroTitleSize, setHeroTitleSize] = useState('');
+  const [heroTitleGradient, setHeroTitleGradient] = useState(true);
+  const [heroTitleEffect, setHeroTitleEffect] = useState('none');
   const [brands, setBrands] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +32,10 @@ export default function ContentPage() {
           setHeroTitleAccent(settings.find(s => s.key === 'hero_title_accent')?.value || 'Inteligencia Artificial');
           setHeroSubtitle(settings.find(s => s.key === 'hero_subtitle')?.value || 'Soluciones de vanguardia...');
           setHeroAccentColor(settings.find(s => s.key === 'hero_accent_color')?.value || '#00f2ff');
+          setHeroAccentColor2(settings.find(s => s.key === 'hero_accent_color_2')?.value || '#9d50bb');
           setHeroTitleSize(settings.find(s => s.key === 'hero_title_size')?.value || '8');
+          setHeroTitleGradient(settings.find(s => s.key === 'hero_title_gradient')?.value === 'true');
+          setHeroTitleEffect(settings.find(s => s.key === 'hero_title_effect')?.value || 'none');
         }
 
         const { data: svcs } = await supabase.from('services').select('*').order('display_order');
@@ -55,12 +61,15 @@ export default function ContentPage() {
       { key: 'hero_title_accent', value: heroTitleAccent },
       { key: 'hero_subtitle', value: heroSubtitle },
       { key: 'hero_accent_color', value: heroAccentColor },
+      { key: 'hero_accent_color_2', value: heroAccentColor2 },
       { key: 'hero_title_size', value: heroTitleSize },
+      { key: 'hero_title_gradient', value: String(heroTitleGradient) },
+      { key: 'hero_title_effect', value: heroTitleEffect },
     ];
     const { error } = await supabase.from('site_settings').upsert(updates);
     setSaving(false);
     if (error) alert('Error: ' + error.message);
-    else alert('Configuración guardada');
+    else alert('Configuración guardada correctamente');
   };
 
   const addBrand = async () => {
@@ -102,10 +111,10 @@ export default function ContentPage() {
   if (loading) return <div className="p-24 text-center">Cargando panel...</div>;
 
   return (
-    <div className="space-y-12 pb-24">
+    <div className="space-y-12 pb-24 max-w-7xl mx-auto px-4">
       <header>
         <h1 className="text-4xl font-bold tracking-tighter">Gestión de Contenido</h1>
-        <p className="text-white/40 mt-2">Personaliza logos, videos y textos de tu plataforma</p>
+        <p className="text-white/40 mt-2">Personaliza logos, videos y estilos tipográficos</p>
       </header>
 
       {/* Marcas Aliadas */}
@@ -149,24 +158,92 @@ export default function ContentPage() {
 
       {/* Hero Management */}
       <section className="glass p-8 rounded-[2.5rem] border-white/10">
-        <div className="flex items-center gap-3 mb-6">
-          <Video className="text-accent-cyan" />
-          <h2 className="text-xl font-bold">Banner Principal (Hero)</h2>
+        <div className="flex items-center gap-3 mb-8">
+          <Type className="text-accent-cyan" />
+          <h2 className="text-2xl font-bold">Banner Principal & Estilos</h2>
         </div>
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4" placeholder="URL Video" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} />
-            <input className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4" placeholder="Efectos" value={heroEffects} onChange={(e) => setHeroEffects(e.target.value)} />
-            <input className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4" placeholder="Título" value={heroTitleMain} onChange={(e) => setHeroTitleMain(e.target.value)} />
-            <input className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4" placeholder="Destacado" value={heroTitleAccent} onChange={(e) => setHeroTitleAccent(e.target.value)} />
+        
+        <div className="space-y-8">
+          {/* Controles de Video */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-white/20 uppercase ml-2">URL del Video Background</label>
+              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none" placeholder="URL Video" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-white/20 uppercase ml-2">Efectos Cloudinary</label>
+              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none" placeholder="ej: e_grayscale, e_blur:1000" value={heroEffects} onChange={(e) => setHeroEffects(e.target.value)} />
+            </div>
           </div>
-          <textarea className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 h-24" value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} />
-          <div className="flex gap-4">
-             <input type="color" value={heroAccentColor} onChange={(e) => setHeroAccentColor(e.target.value)} className="h-14 w-14 bg-transparent border-none cursor-pointer" />
-             <input type="number" value={heroTitleSize} onChange={(e) => setHeroTitleSize(e.target.value)} className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4" />
+
+          {/* Controles de Texto */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-white/5">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-white/20 uppercase ml-2">Texto Principal</label>
+              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none" value={heroTitleMain} onChange={(e) => setHeroTitleMain(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-white/20 uppercase ml-2">Texto Destacado</label>
+              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none" value={heroTitleAccent} onChange={(e) => setHeroTitleAccent(e.target.value)} />
+            </div>
           </div>
-          <button onClick={saveHero} disabled={saving} className="w-full py-5 bg-accent-cyan text-black font-bold rounded-2xl flex items-center justify-center gap-2">
-            <Save size={18} /> {saving ? 'Guardando...' : 'Guardar Banner'}
+
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-white/20 uppercase ml-2">Subtítulo</label>
+            <textarea className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 h-24 focus:border-accent-cyan outline-none resize-none" value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} />
+          </div>
+
+          {/* Diseño Tipográfico y Colores */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-6 border-t border-white/5">
+            <div className="space-y-4">
+              <label className="text-xs font-bold text-white/20 uppercase ml-2 flex items-center gap-2">
+                <Palette size={14} /> Colores del Texto
+              </label>
+              <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] text-white/40 text-center">Color 1</span>
+                  <input type="color" value={heroAccentColor} onChange={(e) => setHeroAccentColor(e.target.value)} className="h-14 w-14 bg-transparent border-none cursor-pointer" />
+                </div>
+                {heroTitleGradient && (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[10px] text-white/40 text-center">Color 2</span>
+                    <input type="color" value={heroAccentColor2} onChange={(e) => setHeroAccentColor2(e.target.value)} className="h-14 w-14 bg-transparent border-none cursor-pointer" />
+                  </div>
+                )}
+                <div className="flex flex-col gap-2 ml-4">
+                  <span className="text-[10px] text-white/40">Usar Degradado</span>
+                  <button 
+                    onClick={() => setHeroTitleGradient(!heroTitleGradient)}
+                    className={`w-12 h-6 rounded-full transition-all relative ${heroTitleGradient ? 'bg-accent-cyan' : 'bg-white/10'}`}
+                  >
+                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${heroTitleGradient ? 'left-7' : 'left-1'}`} />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-white/20 uppercase ml-2">Tamaño del Título (rem)</label>
+              <input type="number" step="0.5" value={heroTitleSize} onChange={(e) => setHeroTitleSize(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none" />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-white/20 uppercase ml-2">Efecto Especial</label>
+              <select 
+                value={heroTitleEffect} 
+                onChange={(e) => setHeroTitleEffect(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-accent-cyan outline-none appearance-none"
+              >
+                <option value="none" className="bg-black">Ninguno</option>
+                <option value="glow" className="bg-black">Glow (Brillo)</option>
+                <option value="neon" className="bg-black">Neon (Luz intensa)</option>
+                <option value="3d" className="bg-black">Sombra 3D</option>
+              </select>
+            </div>
+          </div>
+
+          <button onClick={saveHero} disabled={saving} className="w-full py-5 bg-accent-cyan text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:scale-[1.01] transition-all">
+            <Save size={18} /> {saving ? 'Guardando cambios...' : 'Guardar Configuración del Banner'}
           </button>
         </div>
       </section>
@@ -174,18 +251,21 @@ export default function ContentPage() {
       {/* Services Management */}
       <section className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">Servicios</h2>
-          <button onClick={addService} className="px-6 py-3 glass rounded-2xl font-bold">+ Añadir Servicio</button>
+          <h2 className="text-2xl font-bold">Servicios</h2>
+          <button onClick={addService} className="px-6 py-3 glass rounded-2xl font-bold hover:bg-white/10 transition-all">+ Añadir Servicio</button>
         </div>
         <div className="grid gap-6">
           {services.map((service) => (
             <div key={service.id} className="glass p-8 rounded-[2rem] border-white/5 space-y-4">
               <div className="flex justify-between gap-4">
-                <input className="bg-transparent text-2xl font-bold w-full border-none p-0" value={service.title} onBlur={(e) => updateService(service.id, 'title', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, title: e.target.value } : s))} />
-                <button onClick={() => deleteService(service.id)} className="text-red-400/20 hover:text-red-400"><Trash2 /></button>
+                <input className="bg-transparent text-2xl font-bold w-full border-none p-0 focus:ring-0 outline-none" value={service.title} onBlur={(e) => updateService(service.id, 'title', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, title: e.target.value } : s))} />
+                <button onClick={() => deleteService(service.id)} className="text-red-400/20 hover:text-red-400 transition-colors"><Trash2 /></button>
               </div>
-              <textarea className="bg-transparent text-white/50 w-full border-none p-0 h-20 resize-none" value={service.description} onBlur={(e) => updateService(service.id, 'description', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, description: e.target.value } : s))} />
-              <input className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2" placeholder="URL Video Preview" value={service.video_url} onBlur={(e) => updateService(service.id, 'video_url', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, video_url: e.target.value } : s))} />
+              <textarea className="bg-transparent text-white/50 w-full border-none p-0 h-20 resize-none focus:ring-0 outline-none" value={service.description} onBlur={(e) => updateService(service.id, 'description', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, description: e.target.value } : s))} />
+              <div className="flex items-center gap-4 pt-4 border-t border-white/5 text-xs text-white/20">
+                <Video size={14} />
+                <input className="w-full bg-transparent border-none p-0 focus:ring-0 outline-none" placeholder="URL Video Preview" value={service.video_url} onBlur={(e) => updateService(service.id, 'video_url', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, video_url: e.target.value } : s))} />
+              </div>
             </div>
           ))}
         </div>

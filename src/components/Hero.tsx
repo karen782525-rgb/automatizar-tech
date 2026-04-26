@@ -16,6 +16,9 @@ interface HeroProps {
   titleAccent?: string;
   subtitle?: string;
   accentColor?: string;
+  accentColor2?: string;
+  isGradient?: boolean;
+  textEffect?: string;
   titleSize?: string;
   brands?: Brand[];
 }
@@ -27,6 +30,9 @@ const Hero = ({
   titleAccent = "Inteligencia Artificial",
   subtitle = "Soluciones de vanguardia para automatizar, escalar y transformar el futuro de tu negocio.",
   accentColor = "#00f2ff",
+  accentColor2 = "#9d50bb",
+  isGradient = true,
+  textEffect = "none",
   titleSize = "8",
   brands = []
 }: HeroProps) => {
@@ -41,8 +47,36 @@ const Hero = ({
 
   const finalVideoUrl = getTransformedUrl(videoUrl, effects);
 
+  // Define text styles based on props
+  const getAccentStyle = (): React.CSSProperties => {
+    const base: React.CSSProperties = {};
+    
+    if (isGradient) {
+      base.backgroundImage = `linear-gradient(to right, ${accentColor}, ${accentColor2})`;
+      base.WebkitBackgroundClip = 'text';
+      base.color = 'transparent';
+    } else {
+      base.color = accentColor;
+    }
+
+    // Apply effects
+    switch (textEffect) {
+      case 'glow':
+        base.filter = `drop-shadow(0 0 10px ${accentColor})`;
+        break;
+      case 'neon':
+        base.filter = `drop-shadow(0 0 5px #fff) drop-shadow(0 0 20px ${accentColor})`;
+        break;
+      case '3d':
+        base.textShadow = `3px 3px 0px rgba(0,0,0,0.3), 6px 6px 0px rgba(0,0,0,0.1)`;
+        break;
+    }
+
+    return base;
+  };
+
   return (
-    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-black">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video
@@ -71,13 +105,7 @@ const Hero = ({
             className="text-5xl md:text-[length:var(--title-size)] font-extrabold tracking-tighter mb-6 leading-tight"
           >
             {titleMain}{' '}
-            <span 
-              style={{ 
-                backgroundImage: `linear-gradient(to right, ${accentColor}, #9d50bb)`,
-                WebkitBackgroundClip: 'text',
-                color: 'transparent'
-              }}
-            >
+            <span style={getAccentStyle()} className="inline-block">
               {titleAccent}
             </span>
           </h1>
