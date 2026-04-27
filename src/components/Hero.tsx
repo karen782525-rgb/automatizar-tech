@@ -89,8 +89,11 @@ const Hero = ({
   const finalVideoUrl = getTransformedUrl(videoUrl, effects);
 
   const getTextStyle = (isGrad: boolean, col1: string, col2: string, effect: string, size: string): React.CSSProperties => {
+    // We use a responsive scaling: the size from admin is the "desktop" size.
+    // On mobile we scale it down but on desktop we ensure it looks large.
     const base: React.CSSProperties = {
-      fontSize: `${size}rem`
+      fontSize: `clamp(2.5rem, 8vw, ${size}rem)`,
+      lineHeight: '1.1'
     };
     
     if (isGrad) {
@@ -144,18 +147,18 @@ const Hero = ({
           <h1 className="font-extrabold tracking-tighter mb-6 leading-tight flex flex-wrap justify-center items-center gap-x-4 md:gap-x-6">
             <span 
               style={getTextStyle(mainGradient, mainColor, mainColor2, mainEffect, mainSize)} 
-              className="inline-block text-5xl md:text-[length:inherit]"
+              className="inline-block"
             >
               {titleMain}
             </span>
             <span 
               style={getTextStyle(accentGradient, accentColor, accentColor2, accentEffect, accentSize)} 
-              className="inline-block text-5xl md:text-[length:inherit]"
+              className="inline-block"
             >
               {titleAccent}
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-white/60 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="text-lg md:text-2xl text-white/60 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
             {subtitle}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -181,50 +184,51 @@ const Hero = ({
         </motion.div>
       </div>
 
-      {/* Audio Toggle Button - NEW MORE VISIBLE VERSION */}
+      {/* Audio Toggle Button - REPOSITIONED AND NEUTRAL */}
       <motion.button 
         onClick={() => setIsMuted(!isMuted)}
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ 
-          scale: isMuted ? [1, 1.1, 1] : 1, 
+          scale: isMuted ? [1, 1.05, 1] : 1, 
           opacity: 1,
-          borderColor: isMuted ? "rgba(0, 242, 255, 0.5)" : "rgba(255, 255, 255, 0.1)"
+          borderColor: "rgba(255, 255, 255, 0.2)"
         }}
         transition={{ 
-          scale: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 3, repeat: Infinity, ease: "easeInOut" },
           duration: 0.5
         }}
-        className={`absolute bottom-32 md:bottom-40 right-8 z-40 flex items-center gap-3 px-6 py-4 glass rounded-full border transition-all shadow-[0_0_30px_rgba(0,242,255,0.1)] group ${isMuted ? 'text-accent-cyan' : 'text-white/60'}`}
+        className={`absolute z-40 flex items-center gap-2 px-4 py-3 md:px-6 md:py-4 glass rounded-full border transition-all shadow-[0_0_30px_rgba(255,255,255,0.05)] group text-white
+          top-24 right-6 md:top-auto md:bottom-40 md:right-8`}
       >
         <div className="relative">
-          {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+          {isMuted ? <VolumeX size={18} className="md:w-6 md:h-6" /> : <Volume2 size={18} className="md:w-6 md:h-6" />}
           {isMuted && (
              <motion.div 
                initial={{ scale: 0 }}
-               animate={{ scale: [1, 2, 1] }}
-               transition={{ duration: 1.5, repeat: Infinity }}
-               className="absolute inset-0 bg-accent-cyan/20 rounded-full -z-10"
+               animate={{ scale: [1, 1.8, 1] }}
+               transition={{ duration: 2, repeat: Infinity }}
+               className="absolute inset-0 bg-white/10 rounded-full -z-10"
              />
           )}
         </div>
-        <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+        <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
           {isMuted ? "Activar Sonido" : "Silenciar"}
         </span>
       </motion.button>
 
       {/* Brand Marquee at the bottom */}
       {brands.length > 0 && (
-        <div className="absolute bottom-16 md:bottom-24 w-full z-20">
+        <div className="absolute bottom-12 md:bottom-24 w-full z-20">
           <div className="max-w-7xl mx-auto px-4">
             <p 
               style={{ color: marqueeLabelColor, fontSize: `${marqueeLabelSize}rem` }}
-              className="text-center uppercase tracking-[0.4em] mb-10 font-bold"
+              className="text-center uppercase tracking-[0.4em] mb-8 md:mb-10 font-bold"
             >
               {marqueeLabel}
             </p>
             <div className="relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-32 before:bg-gradient-to-r before:from-black before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-32 after:bg-gradient-to-l after:after:from-black after:to-transparent">
               <motion.div 
-                className="flex gap-24 md:gap-32 items-center w-max"
+                className="flex gap-16 md:gap-32 items-center w-max"
                 animate={{ x: ["0%", "-50%"] }}
                 transition={{ 
                   duration: 25, 
@@ -238,7 +242,7 @@ const Hero = ({
                     <img 
                       src={brand.logo_url} 
                       alt={brand.name} 
-                      className="h-10 md:h-14 lg:h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] brightness-110"
+                      className="h-8 md:h-14 lg:h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] brightness-110"
                     />
                   </div>
                 ))}
@@ -252,9 +256,9 @@ const Hero = ({
       <motion.div 
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/30"
+        className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 text-white/30"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
         </svg>
       </motion.div>
