@@ -148,16 +148,29 @@ const Hero = ({
         <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">{isMuted ? "Activar Sonido" : "Silenciar"}</span>
       </button>
 
-      {brands.length > 0 && (
+      {Array.isArray(brands) && brands.filter(b => b.logo_url && (b.logo_url.startsWith('http') || b.logo_url.startsWith('/'))).length > 0 && (
         <div className="absolute bottom-8 w-full z-20">
           <p style={{ color: marqueeLabelColor, fontSize: `${marqueeLabelSize}rem` }} className="text-center uppercase tracking-[0.4em] mb-6 font-bold">{marqueeLabel}</p>
           <div className="relative overflow-hidden">
             <motion.div className="flex gap-16 md:gap-32 items-center w-max mx-auto" animate={{ x: ["0%", "-50%"] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}>
-              {[...brands, ...brands].map((brand, idx) => (
-                <div key={`${brand.id}-${idx}`} className="flex items-center justify-center opacity-60">
-                  <img src={brand.logo_url} alt={brand.name} className="h-8 md:h-12 w-auto object-contain brightness-110" />
-                </div>
-              ))}
+              {(() => {
+                const validBrands = Array.isArray(brands) ? brands.filter(b => b.logo_url && (b.logo_url.startsWith('http') || b.logo_url.startsWith('/'))) : [];
+                return [...validBrands, ...validBrands].map((brand, idx) => (
+                  <div key={`${brand.id}-${idx}`} className="flex items-center justify-center opacity-60">
+                    <img 
+                      src={brand.logo_url} 
+                      alt={brand.name} 
+                      className="h-8 md:h-12 w-auto object-contain brightness-110" 
+                      onError={(e) => {
+                        const target = e.currentTarget as HTMLImageElement;
+                        if (target && target.parentElement) {
+                          target.parentElement.style.display = 'none';
+                        }
+                      }}
+                    />
+                  </div>
+                ));
+              })()}
             </motion.div>
           </div>
         </div>

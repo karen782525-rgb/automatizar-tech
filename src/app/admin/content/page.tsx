@@ -100,11 +100,21 @@ export default function ContentPage() {
           setServicesTitleGradient(settings.find(s => s.key === 'services_title_gradient')?.value === 'true');
           setServicesTitleSize(settings.find(s => s.key === 'services_title_size')?.value || '3');
           setServicesTitleEffect(settings.find(s => s.key === 'services_title_effect')?.value || 'none');
+
+          // Cargar Marcas desde el JSON unificado
+          const brandsJson = settings.find(s => s.key === 'brands_data')?.value;
+          if (brandsJson) {
+            try {
+              setBrands(JSON.parse(brandsJson));
+            } catch (e) {
+              console.error('Error parsing brands JSON:', e);
+              setBrands([]);
+            }
+          }
         }
+        
         const { data: svcs } = await supabase.from('services').select('*').order('display_order');
         setServices(svcs || []);
-        const { data: bnds } = await supabase.from('brands').select('*').order('display_order');
-        setBrands(bnds || []);
       } catch (err) { console.error(err); } finally { setLoading(false); }
     }
     fetchData();
@@ -149,10 +159,21 @@ export default function ContentPage() {
       { key: 'services_title_gradient', value: String(servicesTitleGradient) },
       { key: 'services_title_size', value: servicesTitleSize },
       { key: 'services_title_effect', value: servicesTitleEffect },
+      { key: 'brands_data', value: JSON.stringify(brands) }, // Guardamos TODO en un solo sitio
     ];
-    await supabase.from('site_settings').upsert(updates);
-    setSaving(false);
-    alert('¡Contenido actualizado!');
+    
+    try {
+      // 1. Guardar TODO (Ajustes + Marcas) en una sola llamada
+      const { error: settingsError } = await supabase.from('site_settings').upsert(updates);
+      if (settingsError) throw settingsError;
+      
+      alert('¡Todo guardado con éxito!');
+    } catch (err: any) {
+      console.error(err);
+      alert('Error al guardar: ' + (err.message || 'Error desconocido'));
+    } finally {
+      setSaving(false);
+    }
   };
 
   const updateService = async (id: string, field: string, value: any) => {
@@ -176,13 +197,28 @@ export default function ContentPage() {
     setBrands(brands.map(b => b.id === id ? { ...b, [field]: value } : b));
   };
 
+  const addBrand = () => {
+    setBrands([...brands, { 
+      id: `new_${Date.now()}`, 
+      name: 'Nueva', 
+      logo_url: '', 
+      display_order: brands.length 
+    }]);
+  };
+
+  const deleteBrand = async (id: string) => {
+    if (!confirm('¿Eliminar marca?')) return;
+    await supabase.from('brands').delete().eq('id', id);
+    setBrands(brands.filter(b => b.id !== id));
+  };
+
   if (loading) return <div className="p-24 text-center text-white/20 font-black">CARGANDO...</div>;
 
   return (
     <div className="min-h-screen bg-[#050505] text-white p-4 md:p-10 space-y-10">
       <header className="flex justify-between items-center max-w-6xl mx-auto">
         <div>
-          <h1 className="text-3xl font-black italic">CMS v2.0</h1>
+          <h1 className="text-3xl font-black italic">CMS v2.1 (Actualizado)</h1>
           <p className="text-[10px] text-accent-cyan uppercase tracking-widest">Panel de Control Compacto</p>
         </div>
         <button onClick={saveAll} disabled={saving} className="bg-white text-black px-8 py-3 rounded-xl font-black uppercase text-[10px] flex items-center gap-2 hover:scale-105 transition-all">
@@ -198,6 +234,28 @@ export default function ContentPage() {
             <h2 className="text-[10px] font-black uppercase text-accent-violet flex items-center gap-2"><Smartphone size={14}/> Identidad</h2>
             <div className="space-y-3">
                <input className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-bold" value={logoText} onChange={(e)=>setLogoText(e.target.value)} placeholder="Texto Logo" />
+               
+               <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                     <p className="text-[8px] text-white/40 uppercase font-black ml-1">Color 1</p>
+                     <input type="color" value={logoColor} onChange={(e)=>setLogoColor(e.target.value)} className="w-full h-8 bg-black/40 rounded-lg border-none cursor-pointer" />
+                  </div>
+                  <div className="space-y-1">
+                     <p className="text-[8px] text-white/40 uppercase font-black ml-1">Color 2</p>
+                     <input type="color" value={logoColor2} onChange={(e)=>setLogoColor2(e.target.value)} className="w-full h-8 bg-black/40 rounded-lg border-none cursor-pointer" />
+                  </div>
+               </div>
+
+               <div className="flex items-center justify-between bg-black/40 border border-white/10 rounded-xl px-4 py-2">
+                  <span className="text-[10px] font-bold uppercase text-white/40">Degradado</span>
+                  <button 
+                    onClick={() => setLogoGradient(!logoGradient)}
+                    className={`w-10 h-5 rounded-full transition-all relative ${logoGradient ? 'bg-accent-violet' : 'bg-white/10'}`}
+                  >
+                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${logoGradient ? 'left-6' : 'left-1'}`} />
+                  </button>
+               </div>
+
                <div className="grid grid-cols-2 gap-2">
                   <div className="flex items-center gap-2 bg-black/40 border border-white/10 rounded-xl px-3 py-2">
                      <span className="text-[8px] text-white/20 uppercase font-black">Tamaño</span>
@@ -230,7 +288,7 @@ export default function ContentPage() {
              <div className="flex items-center justify-between">
                 <h2 className="text-[10px] font-black uppercase text-accent-violet flex items-center gap-2"><Globe size={14}/> Marquesina (Marcas)</h2>
                 <button 
-                  onClick={() => setBrands([...brands, { id: Date.now().toString(), name: 'Nueva', logo_url: '', display_order: brands.length }])}
+                  onClick={addBrand}
                   className="text-[8px] font-black bg-white/5 px-2 py-1 rounded-md border border-white/10 hover:bg-white/10"
                 >
                   + AÑADIR MARCA
@@ -253,32 +311,48 @@ export default function ContentPage() {
                       </div>
                    </div>
                 </div>
-                <div className="grid grid-cols-4 gap-2">
-                   {brands.map((b, idx) => (
-                      <div key={b.id} className="relative aspect-square bg-black/60 rounded-xl overflow-hidden group border border-white/5">
-                         {b.logo_url ? (
-                           <img src={b.logo_url} className="w-full h-full object-contain p-2" />
-                         ) : (
-                           <div className="w-full h-full flex items-center justify-center text-[8px] text-white/10 font-bold">LOGO</div>
-                         )}
-                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-black/90 flex flex-col items-center justify-center gap-2 p-2 transition-all">
-                            <input 
-                              className="w-full bg-white/5 text-[8px] p-1 rounded border border-white/10" 
-                              value={b.logo_url} 
-                              onChange={(e) => {
-                                const newBrands = [...brands];
-                                newBrands[idx].logo_url = e.target.value;
-                                setBrands(newBrands);
-                              }}
-                              placeholder="URL Logo" 
-                            />
-                            <button onClick={() => setBrands(brands.filter(brand => brand.id !== b.id))} className="text-red-500">
-                              <Trash2 size={12}/>
-                            </button>
-                         </div>
-                      </div>
-                   ))}
-                </div>
+                <div className="space-y-3">
+                    {brands.map((b, idx) => (
+                       <div key={b.id} className="bg-black/40 border border-white/5 p-3 rounded-2xl flex items-center gap-4 group">
+                          <div className="w-12 h-12 bg-black/60 rounded-lg flex items-center justify-center shrink-0 border border-white/5 overflow-hidden">
+                             {b.logo_url ? (
+                               <img 
+                                 src={b.logo_url} 
+                                 className="w-full h-full object-contain p-1" 
+                                 onError={(e) => { (e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/50?text=Error'; }} 
+                               />
+                             ) : (
+                               <Globe size={16} className="text-white/10" />
+                             )}
+                          </div>
+                          <div className="flex-1 space-y-1">
+                             <input 
+                               className="w-full bg-transparent text-[10px] font-black uppercase tracking-tighter outline-none focus:text-accent-violet transition-colors" 
+                               value={b.name} 
+                               onChange={(e) => {
+                                 const newBrands = [...brands];
+                                 newBrands[idx].name = e.target.value;
+                                 setBrands(newBrands);
+                               }}
+                               placeholder="Nombre de la marca" 
+                             />
+                             <input 
+                               className="w-full bg-transparent text-[8px] text-white/30 outline-none focus:text-white transition-colors" 
+                               value={b.logo_url} 
+                               onChange={(e) => {
+                                 const newBrands = [...brands];
+                                 newBrands[idx].logo_url = e.target.value;
+                                 setBrands(newBrands);
+                               }}
+                               placeholder="URL del Logo (https://...)" 
+                             />
+                          </div>
+                          <button onClick={() => deleteBrand(b.id)} className="opacity-0 group-hover:opacity-100 p-2 text-white/10 hover:text-red-500 transition-all">
+                             <Trash2 size={14}/>
+                          </button>
+                       </div>
+                    ))}
+                 </div>
              </div>
           </section>
 

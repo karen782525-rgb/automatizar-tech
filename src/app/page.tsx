@@ -33,7 +33,15 @@ export default async function Home() {
     getSettings()
   ]);
 
-  const { data: brands } = await supabase.from('brands').select('*').order('display_order');
+  // Parseamos las marcas desde el JSON unificado en settings
+  let brands = [];
+  try {
+    if (settings.brands_data) {
+      brands = JSON.parse(settings.brands_data);
+    }
+  } catch (e) {
+    console.error("Error parsing brands:", e);
+  }
 
   return (
     <main className="min-h-screen bg-black text-white selection:bg-accent-cyan selection:text-black">
@@ -78,7 +86,7 @@ export default async function Home() {
         marqueeLabelColor={settings.marquee_label_color}
         marqueeLabelSize={settings.marquee_label_size}
 
-        brands={brands || []}
+        brands={brands}
       />
       
       {/* Background Mesh Gradients */}
