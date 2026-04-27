@@ -228,10 +228,10 @@ const Hero = ({
             </p>
             <div className="relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-32 before:bg-gradient-to-r before:from-black before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-32 after:bg-gradient-to-l after:after:from-black after:to-transparent">
               <motion.div 
-                className="flex gap-16 md:gap-32 items-center w-max"
+                className="flex gap-20 md:gap-40 items-center w-max"
                 animate={{ x: ["0%", "-50%"] }}
                 transition={{ 
-                  duration: 25, 
+                  duration: 30, 
                   repeat: Infinity, 
                   ease: "linear" 
                 }}
@@ -242,7 +242,7 @@ const Hero = ({
                     <img 
                       src={brand.logo_url} 
                       alt={brand.name} 
-                      className="h-8 md:h-14 lg:h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] brightness-110"
+                      className="h-12 md:h-20 lg:h-24 w-auto object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.1)] brightness-110"
                     />
                   </div>
                 ))}
