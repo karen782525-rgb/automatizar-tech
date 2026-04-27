@@ -63,7 +63,18 @@ const Hero = ({
   marqueeLabelSize = "0.75",
   brands = []
 }: HeroProps) => {
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = React.useState(true);
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  const toggleAudio = () => {
+    if (videoRef.current) {
+      const newMuted = !isMuted;
+      videoRef.current.muted = newMuted;
+      setIsMuted(newMuted);
+      // Aseguramos que el video siga reproduciéndose
+      videoRef.current.play().catch(e => console.log("Audio play blocked", e));
+    }
+  };
 
   const getTextStyle = (isGrad: boolean, col1: string, col2: string, effect: string, size: string): React.CSSProperties => {
     const base: React.CSSProperties = {
@@ -87,6 +98,7 @@ const Hero = ({
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-black">
       <div className="absolute inset-0 z-0">
         <video 
+          ref={videoRef}
           key={videoUrl} 
           autoPlay 
           loop 
@@ -114,11 +126,12 @@ const Hero = ({
         </motion.div>
       </div>
 
+      {/* Audio Toggle Button - REPOSITIONED AND OPTIMIZED */}
       <button 
-        onClick={() => setIsMuted(!isMuted)} 
-        className="absolute z-40 bottom-40 right-8 md:bottom-48 md:right-10 flex items-center gap-2 px-4 py-2 md:px-5 md:py-3 glass rounded-full border border-white/10 text-white hover:bg-white/10 transition-all shadow-xl"
+        onClick={toggleAudio} 
+        className="absolute z-50 top-24 right-6 md:top-auto md:bottom-48 md:right-10 flex items-center gap-2 px-4 py-2 md:px-5 md:py-3 glass rounded-full border border-white/10 text-white hover:bg-white/10 transition-all shadow-2xl active:scale-95"
       >
-        {isMuted ? <VolumeX size={16} className="md:w-5 md:h-5" /> : <Volume2 size={16} className="md:w-5 md:h-5" />}
+        {isMuted ? <VolumeX size={16} className="md:w-5 md:h-5 text-white/40" /> : <Volume2 size={16} className="md:w-5 md:h-5 text-accent-cyan animate-pulse" />}
         <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">{isMuted ? "Activar Sonido" : "Silenciar"}</span>
       </button>
 
