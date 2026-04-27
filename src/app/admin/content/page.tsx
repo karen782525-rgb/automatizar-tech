@@ -8,6 +8,7 @@ import { Save, Plus, Trash2, Video, FileText, Smartphone, Layout, MousePointer2,
 export default function ContentPage() {
   const [heroVideo, setHeroVideo] = useState('');
   const [heroEffects, setHeroEffects] = useState('');
+  const [heroVideoOpacity, setHeroVideoOpacity] = useState('40');
   const [heroTitleMain, setHeroTitleMain] = useState('');
   const [heroTitleAccent, setHeroTitleAccent] = useState('');
   const [heroSubtitle, setHeroSubtitle] = useState('');
@@ -40,7 +41,8 @@ export default function ContentPage() {
         const { data: settings } = await supabase.from('site_settings').select('*');
         if (settings) {
           setHeroVideo(settings.find(s => s.key === 'hero_video_url')?.value || '');
-          setHeroEffects(settings.find(s => s.key === 'hero_video_effects')?.value || '');
+          setHeroEffects(settings.find(s => s.key === 'hero_video_effects')?.value || 'none');
+          setHeroVideoOpacity(settings.find(s => s.key === 'hero_video_opacity')?.value || '40');
           setHeroTitleMain(settings.find(s => s.key === 'hero_title_main')?.value || 'Potenciamos tu Equipo con');
           setHeroTitleAccent(settings.find(s => s.key === 'hero_title_accent')?.value || 'Inteligencia Artificial');
           setHeroSubtitle(settings.find(s => s.key === 'hero_subtitle')?.value || '');
@@ -73,6 +75,7 @@ export default function ContentPage() {
     const updates = [
       { key: 'hero_video_url', value: heroVideo },
       { key: 'hero_video_effects', value: heroEffects },
+      { key: 'hero_video_opacity', value: heroVideoOpacity },
       { key: 'hero_title_main', value: heroTitleMain },
       { key: 'hero_title_accent', value: heroTitleAccent },
       { key: 'hero_subtitle', value: heroSubtitle },
@@ -175,8 +178,8 @@ export default function ContentPage() {
           {/* Hero Manager Compact */}
           <section className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-4">
             <h2 className="text-[10px] font-black uppercase text-accent-cyan flex items-center gap-2"><Layout size={14}/> Banner Principal</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-               <input className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={heroVideo} onChange={(e)=>setHeroVideo(e.target.value)} placeholder="URL Video Background" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+               <input className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs col-span-1 md:col-span-1" value={heroVideo} onChange={(e)=>setHeroVideo(e.target.value)} placeholder="URL Video Background" />
                <select className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={heroEffects} onChange={(e)=>setHeroEffects(e.target.value)}>
                   <option value="none">✨ Original</option>
                   <option value="brightness(0.5)">🎬 Cine (Oscuro)</option>
@@ -185,6 +188,11 @@ export default function ContentPage() {
                   <option value="sepia(1)">📜 Vintage (Cálido)</option>
                   <option value="blur(8px) brightness(0.7)">💎 Glass (Difuminado)</option>
                </select>
+               <div className="flex items-center gap-2 bg-black/40 border border-white/10 rounded-xl px-4 py-2">
+                  <span className="text-[10px] text-white/40 uppercase font-black">Opacidad</span>
+                  <input type="number" min="0" max="100" className="bg-transparent text-xs w-full outline-none font-bold text-accent-cyan text-right" value={heroVideoOpacity} onChange={(e)=>setHeroVideoOpacity(e.target.value)} />
+                  <span className="text-[10px] text-white/20">%</span>
+               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                <input className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-black" value={heroTitleMain} onChange={(e)=>setHeroTitleMain(e.target.value)} />

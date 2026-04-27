@@ -34,11 +34,13 @@ interface HeroProps {
   marqueeLabelColor?: string;
   marqueeLabelSize?: string;
   brands?: Brand[];
+  videoOpacity?: string;
 }
 
 const Hero = ({ 
   videoUrl = "https://res.cloudinary.com/demo/video/upload/v1631234567/sample.mp4",
   effects = "",
+  videoOpacity = "40",
   titleMain = "Potenciamos tu Equipo con",
   titleAccent = "Inteligencia Artificial",
   subtitle = "Soluciones de vanguardia para automatizar, escalar y transformar el futuro de tu negocio.",
@@ -90,8 +92,8 @@ const Hero = ({
           loop 
           muted={isMuted} 
           playsInline 
-          style={{ filter: effects }}
-          className="h-full w-full object-cover opacity-40"
+          style={{ filter: effects, opacity: Number(videoOpacity) / 100 }}
+          className="h-full w-full object-cover"
         >
           <source src={videoUrl} type="video/mp4" />
         </video>
