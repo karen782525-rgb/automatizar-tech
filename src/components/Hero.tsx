@@ -149,7 +149,7 @@ const Hero = ({
       </button>
 
       {Array.isArray(brands) && brands.filter(b => b.logo_url && (b.logo_url.startsWith('http') || b.logo_url.startsWith('/'))).length > 0 && (
-        <div className="absolute bottom-8 w-full z-20">
+        <div className="absolute bottom-16 w-full z-20">
           <p style={{ color: marqueeLabelColor, fontSize: `${marqueeLabelSize}rem` }} className="text-center uppercase tracking-[0.4em] mb-6 font-bold">{marqueeLabel}</p>
           <div className="relative overflow-hidden w-full">
             <motion.div className="flex gap-16 md:gap-32 items-center w-max min-w-full justify-center" animate={{ x: ["0%", "-50%"] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}>
@@ -160,7 +160,7 @@ const Hero = ({
                     <img 
                       src={brand.logo_url} 
                       alt={brand.name} 
-                      className="h-8 md:h-12 w-auto object-contain brightness-110" 
+                      className="h-12 md:h-16 w-auto object-contain brightness-110" 
                       onError={(e) => {
                         const target = e.currentTarget as HTMLImageElement;
                         if (target && target.parentElement) {
