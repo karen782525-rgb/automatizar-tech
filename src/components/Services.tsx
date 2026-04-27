@@ -79,21 +79,21 @@ const Services = ({
           {subtitle}
         </p>
       </motion.div>
-16: 
-17:       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-18:         {services.map((service) => (
-19:           <ServiceCard
-20:             key={service.id}
-21:             title={service.title}
-22:             description={service.description}
-23:             videoUrl={service.video_url}
-24:             btnText={service.button_text}
-25:             btnUrl={service.button_url}
-26:           />
-27:         ))}
-28:       </div>
-29:     </section>
-30:   );
-31: };
-32: 
-33: export default Services;
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {services.map((service) => (
+          <ServiceCard
+            key={service.id}
+            title={service.title}
+            description={service.description}
+            videoUrl={service.video_url}
+            btnText={service.button_text}
+            btnUrl={service.button_url}
+          />
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export default Services;
