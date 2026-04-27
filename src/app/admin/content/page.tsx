@@ -136,71 +136,134 @@ export default function ContentPage() {
 
       <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Columna Izquierda: Estilos Rápidos */}
+        {/* Columna Izquierda: Identidad y Botones */}
         <div className="space-y-6">
           <section className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-4">
             <h2 className="text-[10px] font-black uppercase text-accent-violet flex items-center gap-2"><Smartphone size={14}/> Identidad</h2>
-            <input className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-bold" value={logoText} onChange={(e)=>setLogoText(e.target.value)} placeholder="Texto Logo" />
-            <div className="grid grid-cols-2 gap-2">
-               <input type="number" className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={logoSize} onChange={(e)=>setLogoSize(e.target.value)} />
-               <select className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={logoEffect} onChange={(e)=>setLogoEffect(e.target.value)}>
-                  <option value="none">Normal</option>
-                  <option value="glow">Glow</option>
-                  <option value="neon">Neon</option>
-               </select>
+            <div className="space-y-3">
+               <input className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-bold" value={logoText} onChange={(e)=>setLogoText(e.target.value)} placeholder="Texto Logo" />
+               <div className="grid grid-cols-2 gap-2">
+                  <div className="flex items-center gap-2 bg-black/40 border border-white/10 rounded-xl px-3 py-2">
+                     <span className="text-[8px] text-white/20 uppercase font-black">Tamaño</span>
+                     <input type="number" step="0.1" className="bg-transparent text-xs w-full text-right font-bold text-accent-violet" value={logoSize} onChange={(e)=>setLogoSize(e.target.value)} />
+                  </div>
+                  <select className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={logoEffect} onChange={(e)=>setLogoEffect(e.target.value)}>
+                     <option value="none">Normal</option>
+                     <option value="glow">Glow</option>
+                     <option value="neon">Neon</option>
+                  </select>
+               </div>
             </div>
           </section>
 
           <section className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-4">
-             <h2 className="text-[10px] font-black uppercase text-accent-cyan flex items-center gap-2"><MousePointer2 size={14}/> Botones</h2>
+             <h2 className="text-[10px] font-black uppercase text-accent-cyan flex items-center gap-2"><MousePointer2 size={14}/> Colores Botones</h2>
              <div className="grid grid-cols-2 gap-4">
-                <input type="color" value={btnPrimaryBg} onChange={(e)=>setBtnPrimaryBg(e.target.value)} className="w-full h-8 bg-transparent" />
-                <input type="color" value={btnSecondaryBorder} onChange={(e)=>setBtnSecondaryBorder(e.target.value)} className="w-full h-8 bg-transparent" />
+                <div className="space-y-1">
+                   <p className="text-[8px] text-white/40 uppercase font-black ml-1">Primario</p>
+                   <input type="color" value={btnPrimaryBg} onChange={(e)=>setBtnPrimaryBg(e.target.value)} className="w-full h-10 bg-black/40 rounded-xl border-none cursor-pointer" />
+                </div>
+                <div className="space-y-1">
+                   <p className="text-[8px] text-white/40 uppercase font-black ml-1">Secundario</p>
+                   <input type="color" value={btnSecondaryBorder} onChange={(e)=>setBtnSecondaryBorder(e.target.value)} className="w-full h-10 bg-black/40 rounded-xl border-none cursor-pointer" />
+                </div>
              </div>
           </section>
 
           <section className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-4">
-             <h2 className="text-[10px] font-black uppercase text-white/20">Aliados</h2>
-             <div className="grid grid-cols-4 gap-2">
-                {brands.map(b => (
-                   <div key={b.id} className="relative aspect-square bg-black/60 rounded-lg overflow-hidden group">
-                      <img src={b.logo_url} className="w-full h-full object-contain p-1" />
-                      <input className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-black/90 text-[8px] text-center" value={b.logo_url} onBlur={(e)=>updateBrand(b.id, 'logo_url', e.target.value)} placeholder="URL" />
+             <div className="flex items-center justify-between">
+                <h2 className="text-[10px] font-black uppercase text-white/20 flex items-center gap-2"><Globe size={14}/> Aliados (Marcas)</h2>
+                <button 
+                  onClick={() => setBrands([...brands, { id: Date.now().toString(), name: 'Nueva', logo_url: '', display_order: brands.length }])}
+                  className="text-[8px] font-black bg-white/5 px-2 py-1 rounded-md border border-white/10 hover:bg-white/10"
+                >
+                  + AÑADIR
+                </button>
+             </div>
+             <div className="grid grid-cols-3 gap-2">
+                {brands.map((b, idx) => (
+                   <div key={b.id} className="relative aspect-square bg-black/60 rounded-xl overflow-hidden group border border-white/5">
+                      {b.logo_url ? (
+                        <img src={b.logo_url} className="w-full h-full object-contain p-2" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[8px] text-white/10 font-bold">SIN LOGO</div>
+                      )}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-black/90 flex flex-col items-center justify-center gap-2 p-2 transition-all">
+                         <input 
+                           className="w-full bg-white/5 text-[8px] p-1 rounded border border-white/10" 
+                           value={b.logo_url} 
+                           onChange={(e) => {
+                             const newBrands = [...brands];
+                             newBrands[idx].logo_url = e.target.value;
+                             setBrands(newBrands);
+                           }}
+                           placeholder="URL Logo" 
+                         />
+                         <button onClick={() => setBrands(brands.filter(brand => brand.id !== b.id))} className="text-red-500 hover:scale-110">
+                           <Trash2 size={12}/>
+                         </button>
+                      </div>
                    </div>
                 ))}
              </div>
           </section>
         </div>
 
-        {/* Columna Derecha: Contenido y Servicios */}
+        {/* Columna Derecha: Contenido Principal */}
         <div className="lg:col-span-2 space-y-6">
           
-          {/* Hero Manager Compact */}
-          <section className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-4">
+          <section className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-6">
             <h2 className="text-[10px] font-black uppercase text-accent-cyan flex items-center gap-2"><Layout size={14}/> Banner Principal</h2>
+            
+            {/* Video Settings */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-               <input className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs col-span-1 md:col-span-1" value={heroVideo} onChange={(e)=>setHeroVideo(e.target.value)} placeholder="URL Video Background" />
-               <select className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={heroEffects} onChange={(e)=>setHeroEffects(e.target.value)}>
-                  <option value="none">✨ Original</option>
-                  <option value="brightness(0.5)">🎬 Cine (Oscuro)</option>
-                  <option value="grayscale(1)">🌑 Noir (B&N)</option>
-                  <option value="contrast(1.2) sepia(0.3) hue-rotate(150deg)">🤖 Cyber (Futurista)</option>
-                  <option value="sepia(1)">📜 Vintage (Cálido)</option>
-                  <option value="blur(8px) brightness(0.7)">💎 Glass (Difuminado)</option>
-               </select>
-               <div className="flex items-center gap-2 bg-black/40 border border-white/10 rounded-xl px-4 py-2">
-                  <span className="text-[10px] text-white/40 uppercase font-black">Opacidad</span>
-                  <input type="number" min="0" max="100" className="bg-transparent text-xs w-full outline-none font-bold text-accent-cyan text-right" value={heroVideoOpacity} onChange={(e)=>setHeroVideoOpacity(e.target.value)} />
-                  <span className="text-[10px] text-white/20">%</span>
+               <div className="space-y-1">
+                  <p className="text-[8px] text-white/40 uppercase font-black ml-2">URL Video</p>
+                  <input className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={heroVideo} onChange={(e)=>setHeroVideo(e.target.value)} />
+               </div>
+               <div className="space-y-1">
+                  <p className="text-[8px] text-white/40 uppercase font-black ml-2">Efecto</p>
+                  <select className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={heroEffects} onChange={(e)=>setHeroEffects(e.target.value)}>
+                     <option value="none">✨ Original</option>
+                     <option value="brightness(0.5)">🎬 Cine</option>
+                     <option value="grayscale(1)">🌑 Noir</option>
+                     <option value="contrast(1.2) sepia(0.3) hue-rotate(150deg)">🤖 Cyber</option>
+                     <option value="sepia(1)">📜 Vintage</option>
+                     <option value="blur(8px) brightness(0.7)">💎 Glass</option>
+                  </select>
+               </div>
+               <div className="space-y-1">
+                  <p className="text-[8px] text-white/40 uppercase font-black ml-2">Opacidad (%)</p>
+                  <input type="number" className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs text-accent-cyan font-bold" value={heroVideoOpacity} onChange={(e)=>setHeroVideoOpacity(e.target.value)} />
                </div>
             </div>
+
+            {/* Title Settings */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-               <input className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-black" value={heroTitleMain} onChange={(e)=>setHeroTitleMain(e.target.value)} />
-               <input className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-black text-accent-cyan" value={heroTitleAccent} onChange={(e)=>setHeroTitleAccent(e.target.value)} />
+               <div className="space-y-1">
+                  <p className="text-[8px] text-white/40 uppercase font-black ml-2">Título 1 (Blanco)</p>
+                  <div className="flex gap-2">
+                     <input className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-black" value={heroTitleMain} onChange={(e)=>setHeroTitleMain(e.target.value)} />
+                     <input type="number" step="0.5" className="w-16 bg-black/40 border border-accent-cyan/30 rounded-xl px-2 py-2 text-xs font-bold text-accent-cyan text-center" value={heroMainSize} onChange={(e)=>setHeroMainSize(e.target.value)} />
+                  </div>
+               </div>
+               <div className="space-y-1">
+                  <p className="text-[8px] text-white/40 uppercase font-black ml-2">Título 2 (Cian)</p>
+                  <div className="flex gap-2">
+                     <input className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-black text-accent-cyan" value={heroTitleAccent} onChange={(e)=>setHeroTitleAccent(e.target.value)} />
+                     <input type="number" step="0.5" className="w-16 bg-black/40 border border-accent-cyan/30 rounded-xl px-2 py-2 text-xs font-bold text-accent-cyan text-center" value={heroAccentSize} onChange={(e)=>setHeroAccentSize(e.target.value)} />
+                  </div>
+               </div>
+            </div>
+
+            {/* Subtitle Settings */}
+            <div className="space-y-1">
+               <p className="text-[8px] text-white/40 uppercase font-black ml-2">Subtítulo (Descripción)</p>
+               <textarea className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs h-20 resize-none outline-none focus:border-accent-cyan/50 transition-all" value={heroSubtitle} onChange={(e)=>setHeroSubtitle(e.target.value)} placeholder="Descripción debajo del título..." />
             </div>
           </section>
 
-          {/* SERVICIOS - VERSION ULTRA COMPACTA */}
+          {/* SERVICIOS */}
           <section className="space-y-4">
             <div className="flex justify-between items-center px-2">
               <h2 className="text-xl font-black uppercase tracking-tighter">Servicios & Demos</h2>
@@ -208,35 +271,53 @@ export default function ContentPage() {
             </div>
 
             <div className="grid gap-4">
-              {services.map((s) => (
+              {services.map((s, idx) => (
                 <div key={s.id} className="bg-white/5 border border-white/10 p-5 rounded-3xl hover:border-white/20 transition-all">
                   <div className="flex justify-between items-center mb-3">
-                    <input className="bg-transparent text-lg font-black border-none p-0 focus:ring-0 w-full" value={s.title} onBlur={(e)=>updateService(s.id, 'title', e.target.value)} onChange={(e)=>setServices(services.map(ser => ser.id === s.id ? {...ser, title: e.target.value} : ser))} />
+                    <input className="bg-transparent text-lg font-black border-none p-0 focus:ring-0 w-full" value={s.title} onChange={(e) => {
+                       const newServices = [...services];
+                       newServices[idx].title = e.target.value;
+                       setServices(newServices);
+                    }} onBlur={(e)=>updateService(s.id, 'title', e.target.value)} />
                     <button onClick={()=>deleteService(s.id)} className="text-white/10 hover:text-red-500"><Trash2 size={16}/></button>
                   </div>
                   
-                  <textarea className="bg-transparent text-xs text-white/40 border-none p-0 w-full h-8 resize-none focus:ring-0 mb-4" value={s.description} onBlur={(e)=>updateService(s.id, 'description', e.target.value)} onChange={(e)=>setServices(services.map(ser => ser.id === s.id ? {...ser, description: e.target.value} : ser))} placeholder="Descripción corta..." />
+                  <textarea className="bg-transparent text-xs text-white/40 border-none p-0 w-full h-8 resize-none focus:ring-0 mb-4" value={s.description} onChange={(e) => {
+                       const newServices = [...services];
+                       newServices[idx].description = e.target.value;
+                       setServices(newServices);
+                    }} onBlur={(e)=>updateService(s.id, 'description', e.target.value)} />
 
-                  {/* CAMPOS DE DEMO Y VIDEO (AQUÍ ESTÁN) */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-4 border-t border-white/5">
                     <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
                       <FileText size={12} className="text-accent-violet shrink-0" />
-                      <input className="bg-transparent text-[9px] w-full outline-none" placeholder="Texto Botón Demo" value={s.button_text} onBlur={(e)=>updateService(s.id, 'button_text', e.target.value)} onChange={(e)=>setServices(services.map(ser => ser.id === s.id ? {...ser, button_text: e.target.value} : ser))} />
+                      <input className="bg-transparent text-[9px] w-full outline-none" placeholder="Texto Botón Demo" value={s.button_text} onChange={(e) => {
+                        const newServices = [...services];
+                        newServices[idx].button_text = e.target.value;
+                        setServices(newServices);
+                      }} onBlur={(e)=>updateService(s.id, 'button_text', e.target.value)} />
                     </div>
                     <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
                       <Globe size={12} className="text-accent-cyan shrink-0" />
-                      <input className="bg-transparent text-[9px] w-full outline-none" placeholder="URL de la Demo" value={s.button_url} onBlur={(e)=>updateService(s.id, 'button_url', e.target.value)} onChange={(e)=>setServices(services.map(ser => ser.id === s.id ? {...ser, button_url: e.target.value} : ser))} />
+                      <input className="bg-transparent text-[9px] w-full outline-none" placeholder="URL de la Demo" value={s.button_url} onChange={(e) => {
+                        const newServices = [...services];
+                        newServices[idx].button_url = e.target.value;
+                        setServices(newServices);
+                      }} onBlur={(e)=>updateService(s.id, 'button_url', e.target.value)} />
                     </div>
                     <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
                       <Video size={12} className="text-white/20 shrink-0" />
-                      <input className="bg-transparent text-[9px] w-full outline-none" placeholder="URL Video" value={s.video_url} onBlur={(e)=>updateService(s.id, 'video_url', e.target.value)} onChange={(e)=>setServices(services.map(ser => ser.id === s.id ? {...ser, video_url: e.target.value} : ser))} />
+                      <input className="bg-transparent text-[9px] w-full outline-none" placeholder="URL Video" value={s.video_url} onChange={(e) => {
+                        const newServices = [...services];
+                        newServices[idx].video_url = e.target.value;
+                        setServices(newServices);
+                      }} onBlur={(e)=>updateService(s.id, 'video_url', e.target.value)} />
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           </section>
-
         </div>
       </main>
     </div>
