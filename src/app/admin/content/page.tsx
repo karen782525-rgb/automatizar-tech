@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Video, FileText, Type, Palette, Layout, Maximize, Smartphone, MousePointer2, Briefcase } from 'lucide-react';
+import { Save, Plus, Trash2, Video, FileText, Type, Palette, Layout, Maximize, Smartphone, MousePointer2, Briefcase, Globe } from 'lucide-react';
 
 export default function ContentPage() {
   const [heroVideo, setHeroVideo] = useState('');
@@ -169,14 +169,7 @@ export default function ContentPage() {
     const { error } = await supabase.from('site_settings').upsert(updates);
     setSaving(false);
     if (error) alert('Error: ' + error.message);
-    else alert('Todo el contenido actualizado correctamente');
-  };
-
-  const addBrand = async () => {
-    const newBrand = { name: 'Nueva Marca', logo_url: '', display_order: brands.length + 1 };
-    const { data, error } = await supabase.from('brands').insert([newBrand]).select();
-    if (error) alert(error.message);
-    else if (data) setBrands([...brands, data[0]]);
+    else alert('Contenido guardado exitosamente');
   };
 
   const updateBrand = async (id: string, field: string, value: any) => {
@@ -208,248 +201,175 @@ export default function ContentPage() {
     setServices(services.filter(s => s.id !== id));
   };
 
-  if (loading) return <div className="p-24 text-center text-white/20 uppercase tracking-widest font-black animate-pulse">Sincronizando con la nube...</div>;
+  if (loading) return <div className="p-24 text-center text-white/20 uppercase tracking-widest font-black animate-pulse">Sincronizando...</div>;
 
   return (
-    <div className="space-y-12 pb-24 max-w-7xl mx-auto px-4">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-12">
+    <div className="space-y-8 pb-24 max-w-6xl mx-auto px-4">
+      <header className="flex items-center justify-between gap-6 pt-10">
         <div>
-          <h1 className="text-6xl font-black tracking-tighter bg-gradient-to-r from-white via-white/80 to-white/20 bg-clip-text text-transparent">Content Manager</h1>
-          <p className="text-accent-cyan mt-2 text-xs uppercase tracking-[0.4em] font-bold">Arquitectura de marca & Diseño web</p>
+          <h1 className="text-4xl font-black tracking-tighter bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent italic">CMS Dashboard</h1>
+          <p className="text-[10px] text-accent-cyan uppercase tracking-[0.4em] font-bold">Automatizar.tech Admin</p>
         </div>
-        <button onClick={saveAll} disabled={saving} className="px-12 py-5 bg-white text-black font-black rounded-[2rem] flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all uppercase text-xs tracking-widest shadow-[0_20px_40px_rgba(255,255,255,0.1)]">
-          <Save size={18} /> {saving ? 'Sincronizando...' : 'Publicar Cambios'}
+        <button onClick={saveAll} disabled={saving} className="px-10 py-4 bg-white text-black font-black rounded-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all uppercase text-[10px] tracking-widest shadow-xl">
+          <Save size={16} /> {saving ? 'Guardando...' : 'Publicar Todo'}
         </button>
       </header>
 
-      {/* Identidad & Logo */}
-      <section className="glass p-10 rounded-[3rem] border-white/5 bg-gradient-to-br from-white/5 to-transparent">
-        <div className="flex items-center gap-4 mb-10">
-          <Smartphone className="text-accent-violet" />
-          <h2 className="text-2xl font-black uppercase tracking-tighter">Identidad Visual</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-2 space-y-2">
-            <label className="text-[10px] font-black text-white/20 uppercase ml-2 tracking-widest">Texto del Logo</label>
-            <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold focus:border-accent-violet transition-colors" value={logoText} onChange={(e) => setLogoText(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-white/20 uppercase ml-2 tracking-widest">Tamaño Logo</label>
-            <input type="number" step="0.1" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold text-accent-violet" value={logoSize} onChange={(e) => setLogoSize(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-white/20 uppercase ml-2 tracking-widest">Efecto</label>
-            <select value={logoEffect} onChange={(e) => setLogoEffect(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none appearance-none font-bold">
-              <option value="none">Limpio</option>
-              <option value="glow">Resplandor</option>
-              <option value="neon">Neon</option>
-              <option value="3d">Volumen 3D</option>
-            </select>
-          </div>
-        </div>
-        <div className="mt-8 flex flex-col md:flex-row items-center gap-8 bg-black/40 p-8 rounded-[2rem] border border-white/5">
-          <div className="flex items-center gap-6">
-            <input type="color" value={logoColor} onChange={(e) => setLogoColor(e.target.value)} className="h-12 w-12 bg-transparent border-none cursor-pointer" />
-            {logoGradient && <input type="color" value={logoColor2} onChange={(e) => setLogoColor2(e.target.value)} className="h-12 w-12 bg-transparent border-none cursor-pointer" />}
-            <button onClick={() => setLogoGradient(!logoGradient)} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${logoGradient ? 'bg-accent-violet text-white' : 'bg-white/5 text-white/20'}`}>Degradado: {logoGradient ? 'ON' : 'OFF'}</button>
-          </div>
-          <div className="md:ml-auto flex items-center gap-6">
-            <span className="text-[10px] text-white/20 uppercase font-black tracking-widest">Vista Previa:</span>
-            <span style={{ 
-              fontSize: `${logoSize}rem`, 
-              color: logoGradient ? 'transparent' : logoColor,
-              backgroundImage: logoGradient ? `linear-gradient(to right, ${logoColor}, ${logoColor2})` : 'none',
-              WebkitBackgroundClip: logoGradient ? 'text' : 'none',
-              filter: logoEffect === 'glow' ? `drop-shadow(0 0 8px ${logoColor})` : logoEffect === 'neon' ? `drop-shadow(0 0 12px ${logoColor})` : 'none'
-            }} className="font-black tracking-tighter">
-              {logoText}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Hero Design Suite */}
-      <section className="glass p-10 rounded-[3rem] border-white/5">
-        <div className="flex items-center gap-4 mb-12">
-          <Layout className="text-accent-cyan" />
-          <h2 className="text-2xl font-black uppercase tracking-tighter">Diseño del Banner (Hero)</h2>
-        </div>
-        
-        <div className="space-y-16">
-          {/* Media & Global */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 rounded-[2rem] bg-black/20 border border-white/5">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-white/20 uppercase ml-2 tracking-widest flex items-center gap-2"><Video size={12}/> Video URL (Cloudinary)</label>
-              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold text-accent-cyan" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} placeholder="https://res.cloudinary.com/..." />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Styles & Brand */}
+        <div className="lg:col-span-1 space-y-8">
+          {/* Identidad */}
+          <section className="glass p-6 rounded-[2rem] border-white/5 space-y-6">
+            <div className="flex items-center gap-3 text-accent-violet">
+              <Smartphone size={20} />
+              <h2 className="text-xs font-black uppercase tracking-widest">Identidad Visual</h2>
             </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-white/20 uppercase ml-2 tracking-widest flex items-center gap-2"><Maximize size={12}/> Efectos (Transformaciones)</label>
-              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold" value={heroEffects} onChange={(e) => setHeroEffects(e.target.value)} placeholder="e_art:incognito, q_auto..." />
-            </div>
-          </div>
-
-          {/* Tipografía dual */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="p-8 rounded-[2rem] bg-white/5 border border-white/10 space-y-6">
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-white/40 mb-8 border-b border-white/5 pb-4 flex items-center gap-2"><Type size={14}/> Parte Principal</h3>
-              <input className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 outline-none font-bold text-xl" value={heroTitleMain} onChange={(e) => setHeroTitleMain(e.target.value)} />
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4 bg-black/40 p-4 rounded-2xl">
-                  <input type="color" value={heroMainColor} onChange={(e) => setHeroMainColor(e.target.value)} className="h-8 w-8 bg-transparent border-none cursor-pointer" />
-                  {heroMainGradient && <input type="color" value={heroMainColor2} onChange={(e) => setHeroMainColor2(e.target.value)} className="h-8 w-8 bg-transparent border-none cursor-pointer" />}
-                  <button onClick={() => setHeroMainGradient(!heroMainGradient)} className={`w-8 h-8 rounded-full border border-white/10 transition-all ${heroMainGradient ? 'bg-white' : 'bg-transparent'}`} />
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-[9px] font-black text-white/20 uppercase ml-1">Texto Logo</label>
+                <input className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none font-bold text-sm focus:border-accent-violet" value={logoText} onChange={(e) => setLogoText(e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black text-white/20 uppercase ml-1">Tamaño</label>
+                  <input type="number" step="0.1" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none font-bold text-xs" value={logoSize} onChange={(e) => setLogoSize(e.target.value)} />
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-[10px] font-black text-white/20 uppercase">Size:</span>
-                  <input type="number" step="0.5" className="bg-black/40 border border-white/5 w-16 px-3 py-2 rounded-xl text-center font-bold text-accent-cyan" value={heroMainSize} onChange={(e) => setHeroMainSize(e.target.value)} />
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black text-white/20 uppercase ml-1">Efecto</label>
+                  <select value={logoEffect} onChange={(e) => setLogoEffect(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none font-bold text-xs">
+                    <option value="none">Limpio</option>
+                    <option value="glow">Glow</option>
+                    <option value="neon">Neon</option>
+                    <option value="3d">3D</option>
+                  </select>
                 </div>
               </div>
             </div>
+          </section>
 
-            <div className="p-8 rounded-[2rem] bg-accent-cyan/5 border border-accent-cyan/20 space-y-6">
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-accent-cyan/40 mb-8 border-b border-white/5 pb-4 flex items-center gap-2"><Palette size={14}/> Parte Destacada</h3>
-              <input className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 outline-none font-bold text-xl" value={heroTitleAccent} onChange={(e) => setHeroTitleAccent(e.target.value)} />
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4 bg-black/40 p-4 rounded-2xl">
-                  <input type="color" value={heroAccentColor} onChange={(e) => setHeroAccentColor(e.target.value)} className="h-8 w-8 bg-transparent border-none cursor-pointer" />
-                  {heroAccentGradient && <input type="color" value={heroAccentColor2} onChange={(e) => setHeroAccentColor2(e.target.value)} className="h-8 w-8 bg-transparent border-none cursor-pointer" />}
-                  <button onClick={() => setHeroAccentGradient(!heroAccentGradient)} className={`w-8 h-8 rounded-full border border-white/10 transition-all ${heroAccentGradient ? 'bg-accent-cyan' : 'bg-transparent'}`} />
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-[10px] font-black text-white/20 uppercase">Size:</span>
-                  <input type="number" step="0.5" className="bg-black/40 border border-white/5 w-16 px-3 py-2 rounded-xl text-center font-bold text-accent-cyan" value={heroAccentSize} onChange={(e) => setHeroAccentSize(e.target.value)} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-12 border-t border-white/5">
-            <div className="space-y-6 p-8 rounded-[2rem] bg-white/5 border border-white/5">
-              <h3 className="text-xs font-black uppercase tracking-widest text-white/40 flex items-center gap-2"><MousePointer2 size={14}/> Botón Primario</h3>
-              <div className="grid grid-cols-2 gap-6">
-                <input type="color" value={btnPrimaryBg} onChange={(e) => setBtnPrimaryBg(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
-                <input type="color" value={btnPrimaryText} onChange={(e) => setBtnPrimaryText(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
-              </div>
-            </div>
-            <div className="space-y-6 p-8 rounded-[2rem] bg-white/5 border border-white/5">
-              <h3 className="text-xs font-black uppercase tracking-widest text-white/40 flex items-center gap-2"><MousePointer2 size={14}/> Botón Secundario</h3>
-              <div className="grid grid-cols-2 gap-6">
-                <input type="color" value={btnSecondaryBorder} onChange={(e) => setBtnSecondaryBorder(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
-                <input type="color" value={btnSecondaryText} onChange={(e) => setBtnSecondaryText(e.target.value)} className="w-full h-12 bg-transparent cursor-pointer" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Servicios Section Header Styles */}
-      <section className="glass p-10 rounded-[3rem] border-white/5 bg-gradient-to-br from-accent-cyan/5 to-transparent">
-        <div className="flex items-center gap-4 mb-10">
-          <Briefcase className="text-accent-cyan" />
-          <h2 className="text-2xl font-black uppercase tracking-tighter">Sección de Servicios (Encabezado)</h2>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-white/20 uppercase ml-2">Título de la Sección</label>
-              <input className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold" value={servicesTitle} onChange={(e) => setServicesTitle(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-white/20 uppercase ml-2">Subtítulo</label>
-              <textarea className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 h-24 outline-none resize-none font-medium text-sm" value={servicesSubtitle} onChange={(e) => setServicesSubtitle(e.target.value)} />
-            </div>
-          </div>
-
-          <div className="space-y-6 bg-black/20 p-8 rounded-[2rem] border border-white/5">
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-white/20 uppercase ml-2">Color 1</label>
-                <input type="color" value={servicesTitleColor} onChange={(e) => setServicesTitleColor(e.target.value)} className="w-full h-10 bg-transparent cursor-pointer" />
-              </div>
-              {servicesTitleGradient && (
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-white/20 uppercase ml-2">Color 2</label>
-                  <input type="color" value={servicesTitleColor2} onChange={(e) => setServicesTitleColor2(e.target.value)} className="w-full h-10 bg-transparent cursor-pointer" />
-                </div>
-              )}
+          {/* Botones Globales */}
+          <section className="glass p-6 rounded-[2rem] border-white/5 space-y-6">
+            <div className="flex items-center gap-3 text-accent-cyan">
+              <MousePointer2 size={20} />
+              <h2 className="text-xs font-black uppercase tracking-widest">Botones</h2>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-white/20 uppercase ml-2 text-center block">Tamaño (rem)</label>
-                <input type="number" step="0.5" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none font-bold text-center" value={servicesTitleSize} onChange={(e) => setServicesTitleSize(e.target.value)} />
+                <p className="text-[9px] font-black text-white/20 uppercase text-center">Primario</p>
+                <div className="flex gap-2">
+                  <input type="color" value={btnPrimaryBg} onChange={(e) => setBtnPrimaryBg(e.target.value)} className="h-8 w-full bg-transparent cursor-pointer rounded-lg" title="Fondo" />
+                  <input type="color" value={btnPrimaryText} onChange={(e) => setBtnPrimaryText(e.target.value)} className="h-8 w-full bg-transparent cursor-pointer rounded-lg" title="Texto" />
+                </div>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-white/20 uppercase ml-2 text-center block">Efecto</label>
-                <select value={servicesTitleEffect} onChange={(e) => setServicesTitleEffect(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none appearance-none text-xs font-bold text-center">
-                  <option value="none">Ninguno</option>
-                  <option value="glow">Glow</option>
-                  <option value="neon">Neon</option>
-                  <option value="3d">3D</option>
-                </select>
-              </div>
-            </div>
-            <button onClick={() => setServicesTitleGradient(!servicesTitleGradient)} className={`w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${servicesTitleGradient ? 'bg-accent-cyan text-black' : 'bg-white/5 text-white/20'}`}>
-              Degradado: {servicesTitleGradient ? 'ON' : 'OFF'}
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Aliados */}
-      <section className="glass p-10 rounded-[3rem] border-white/5 bg-accent-cyan/5">
-        <div className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-4">
-            <Layout className="text-accent-cyan" />
-            <h2 className="text-2xl font-black uppercase tracking-tighter">Aliados (Logos)</h2>
-          </div>
-          <button onClick={addBrand} className="px-8 py-3 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all">Añadir Marca</button>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-          {brands.map((brand) => (
-            <div key={brand.id} className="bg-black/40 p-4 rounded-3xl border border-white/5 space-y-4 group relative">
-              <button onClick={() => deleteBrand(brand.id)} className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"><Trash2 size={12} /></button>
-              <div className="h-12 flex items-center justify-center bg-white/5 rounded-xl p-2">
-                {brand.logo_url && <img src={brand.logo_url} className="h-full object-contain" />}
-              </div>
-              <input className="w-full bg-transparent border-none p-0 text-[10px] text-white/40 text-center focus:ring-0 outline-none" value={brand.logo_url} onBlur={(e) => updateBrand(brand.id, 'logo_url', e.target.value)} onChange={(e) => setBrands(brands.map(b => b.id === brand.id ? { ...b, logo_url: e.target.value } : b))} placeholder="URL Logo" />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Servicios Manager */}
-      <section className="space-y-8">
-        <div className="flex items-center justify-between px-4">
-          <h2 className="text-4xl font-black tracking-tighter uppercase">Listado de Servicios</h2>
-          <button onClick={addService} className="px-8 py-3 glass rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all border-white/10">+ Nuevo Servicio</button>
-        </div>
-        <div className="grid gap-8">
-          {services.map((service) => (
-            <div key={service.id} className="glass p-10 rounded-[3rem] border-white/5 space-y-6 hover:border-white/20 transition-all group">
-              <div className="flex justify-between gap-6">
-                <input className="bg-transparent text-4xl font-black w-full border-none p-0 focus:ring-0 outline-none tracking-tighter" value={service.title} onBlur={(e) => updateService(service.id, 'title', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, title: e.target.value } : s))} />
-                <button onClick={() => deleteService(service.id)} className="text-red-500/20 hover:text-red-500 transition-colors"><Trash2 size={24} /></button>
-              </div>
-              <textarea className="bg-transparent text-white/40 text-lg w-full border-none p-0 h-24 resize-none focus:ring-0 outline-none leading-relaxed" value={service.description} onBlur={(e) => updateService(service.id, 'description', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, description: e.target.value } : s))} />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-white/5">
-                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">
-                  <FileText size={14} className="text-accent-violet" />
-                  <input className="w-full bg-transparent border-none p-0 focus:ring-0 outline-none" placeholder="Texto del Botón (ej: Ver Demo)" value={service.button_text} onBlur={(e) => updateService(service.id, 'button_text', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, button_text: e.target.value } : s))} />
-                </div>
-                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">
-                  <Layout size={14} className="text-accent-cyan" />
-                  <input className="w-full bg-transparent border-none p-0 focus:ring-0 outline-none" placeholder="Link de la Demo (URL)" value={service.button_url} onBlur={(e) => updateService(service.id, 'button_url', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, button_url: e.target.value } : s))} />
+                <p className="text-[9px] font-black text-white/20 uppercase text-center">Secundario</p>
+                <div className="flex gap-2">
+                  <input type="color" value={btnSecondaryBorder} onChange={(e) => setBtnSecondaryBorder(e.target.value)} className="h-8 w-full bg-transparent cursor-pointer rounded-lg" title="Borde" />
+                  <input type="color" value={btnSecondaryText} onChange={(e) => setBtnSecondaryText(e.target.value)} className="h-8 w-full bg-transparent cursor-pointer rounded-lg" title="Texto" />
                 </div>
               </div>
-              <div className="flex items-center gap-4 pt-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">
-                <Video size={14} className="text-accent-cyan" />
-                <input className="w-full bg-transparent border-none p-0 focus:ring-0 outline-none" placeholder="Video Cloudinary URL" value={service.video_url} onBlur={(e) => updateService(service.id, 'video_url', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, video_url: e.target.value } : s))} />
+            </div>
+          </section>
+
+          {/* Aliados Compact */}
+          <section className="glass p-6 rounded-[2rem] border-white/5 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-black uppercase tracking-widest text-white/40">Aliados</h2>
+              <button onClick={() => updateBrand('', 'display_order', brands.length + 1)} className="text-accent-cyan hover:scale-110 transition-all"><Plus size={16}/></button>
+            </div>
+            <div className="grid grid-cols-4 gap-3">
+              {brands.map((brand) => (
+                <div key={brand.id} className="relative aspect-square bg-black/40 rounded-xl border border-white/5 group overflow-hidden">
+                   <img src={brand.logo_url} className="w-full h-full object-contain p-2" />
+                   <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 transition-all">
+                     <button onClick={() => deleteBrand(brand.id)} className="text-red-500"><Trash2 size={12} /></button>
+                     <input className="w-full bg-transparent text-[8px] text-center border-none focus:ring-0" placeholder="URL" value={brand.logo_url} onBlur={(e) => updateBrand(brand.id, 'logo_url', e.target.value)} />
+                   </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        {/* Right Column: Main Content */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Banner Hero Manager */}
+          <section className="glass p-8 rounded-[2.5rem] border-white/5 space-y-8">
+            <div className="flex items-center gap-3">
+              <Layout className="text-accent-cyan" />
+              <h2 className="text-xl font-black uppercase tracking-tighter italic">Banner Principal</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1">
+                <label className="text-[9px] font-black text-white/20 uppercase ml-1">Video Background (Cloudinary URL)</label>
+                <input className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none font-medium text-sm text-accent-cyan" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[9px] font-black text-white/20 uppercase ml-1">Efectos Visuales</label>
+                <input className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none font-medium text-sm" value={heroEffects} onChange={(e) => setHeroEffects(e.target.value)} />
               </div>
             </div>
-          ))}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-black/40 p-6 rounded-2xl border border-white/5">
+              <div className="space-y-3">
+                <p className="text-[9px] font-black text-white/30 uppercase tracking-widest border-b border-white/5 pb-2 italic">Typography A</p>
+                <input className="w-full bg-transparent border-none p-0 text-xl font-black outline-none" value={heroTitleMain} onChange={(e) => setHeroTitleMain(e.target.value)} />
+                <div className="flex items-center gap-4">
+                  <input type="color" value={heroMainColor} onChange={(e) => setHeroMainColor(e.target.value)} className="h-6 w-6 bg-transparent" />
+                  <input type="number" step="0.5" className="bg-white/5 border border-white/10 w-12 text-center text-xs rounded py-1" value={heroMainSize} onChange={(e) => setHeroMainSize(e.target.value)} />
+                </div>
+              </div>
+              <div className="space-y-3">
+                <p className="text-[9px] font-black text-accent-cyan/30 uppercase tracking-widest border-b border-white/5 pb-2 italic">Typography B</p>
+                <input className="w-full bg-transparent border-none p-0 text-xl font-black outline-none text-accent-cyan" value={heroTitleAccent} onChange={(e) => setHeroTitleAccent(e.target.value)} />
+                <div className="flex items-center gap-4">
+                  <input type="color" value={heroAccentColor} onChange={(e) => setHeroAccentColor(e.target.value)} className="h-6 w-6 bg-transparent" />
+                  <input type="number" step="0.5" className="bg-white/5 border border-white/10 w-12 text-center text-xs rounded py-1 text-accent-cyan" value={heroAccentSize} onChange={(e) => setHeroAccentSize(e.target.value)} />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Servicios Manager COMPACT */}
+          <section className="space-y-6">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="text-2xl font-black tracking-tighter uppercase italic">Servicios</h2>
+              <button onClick={addService} className="flex items-center gap-2 px-6 py-2 glass rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-white/10 border-white/10 transition-all">+ Añadir</button>
+            </div>
+            <div className="grid gap-4">
+              {services.map((service) => (
+                <div key={service.id} className="glass p-6 rounded-[2rem] border-white/5 hover:border-white/10 transition-all">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-grow space-y-4">
+                      <div className="flex items-center gap-4">
+                        <input className="bg-transparent text-xl font-black w-full border-none p-0 focus:ring-0 outline-none tracking-tight" value={service.title} onBlur={(e) => updateService(service.id, 'title', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, title: e.target.value } : s))} />
+                        <button onClick={() => deleteService(service.id)} className="text-white/10 hover:text-red-500 transition-colors"><Trash2 size={18} /></button>
+                      </div>
+                      <textarea className="bg-transparent text-white/40 text-xs w-full border-none p-0 h-12 resize-none focus:ring-0 outline-none" value={service.description} onBlur={(e) => updateService(service.id, 'description', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, description: e.target.value } : s))} />
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-white/5">
+                        <div className="flex items-center gap-2 text-[8px] font-black uppercase text-white/20">
+                          <FileText size={12} className="text-accent-violet shrink-0" />
+                          <input className="w-full bg-transparent border-none p-0 focus:ring-0 text-white/60" placeholder="Texto Botón" value={service.button_text} onBlur={(e) => updateService(service.id, 'button_text', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, button_text: e.target.value } : s))} />
+                        </div>
+                        <div className="flex items-center gap-2 text-[8px] font-black uppercase text-white/20">
+                          <Globe size={12} className="text-accent-cyan shrink-0" />
+                          <input className="w-full bg-transparent border-none p-0 focus:ring-0 text-white/60" placeholder="Link Demo" value={service.button_url} onBlur={(e) => updateService(service.id, 'button_url', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, button_url: e.target.value } : s))} />
+                        </div>
+                        <div className="flex items-center gap-2 text-[8px] font-black uppercase text-white/20">
+                          <Video size={12} className="text-accent-cyan shrink-0" />
+                          <input className="w-full bg-transparent border-none p-0 focus:ring-0 text-white/60" placeholder="URL Video" value={service.video_url} onBlur={(e) => updateService(service.id, 'video_url', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, video_url: e.target.value } : s))} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
