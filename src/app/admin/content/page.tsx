@@ -37,6 +37,18 @@ export default function ContentPage() {
   const [btnSecondaryBorder, setBtnSecondaryBorder] = useState('#ffffff');
   const [btnSecondaryText, setBtnSecondaryText] = useState('#ffffff');
 
+  const [marqueeLabel, setMarqueeLabel] = useState('Marcas que confían en nosotros');
+  const [marqueeLabelColor, setMarqueeLabelColor] = useState('rgba(255,255,255,0.4)');
+  const [marqueeLabelSize, setMarqueeLabelSize] = useState('0.75');
+
+  const [servicesTitle, setServicesTitle] = useState('Servicios & Demos');
+  const [servicesSubtitle, setServicesSubtitle] = useState('Soluciones de vanguardia para automatizar, escalar y transformar el futuro de tu negocio.');
+  const [servicesTitleColor, setServicesTitleColor] = useState('#ffffff');
+  const [servicesTitleColor2, setServicesTitleColor2] = useState('#ffffff');
+  const [servicesTitleGradient, setServicesTitleGradient] = useState(false);
+  const [servicesTitleSize, setServicesTitleSize] = useState('3');
+  const [servicesTitleEffect, setServicesTitleEffect] = useState('none');
+
   const [brands, setBrands] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,6 +88,18 @@ export default function ContentPage() {
           setBtnPrimaryText(settings.find(s => s.key === 'btn_primary_text')?.value || '#000000');
           setBtnSecondaryBorder(settings.find(s => s.key === 'btn_secondary_border')?.value || '#ffffff');
           setBtnSecondaryText(settings.find(s => s.key === 'btn_secondary_text')?.value || '#ffffff');
+
+          setMarqueeLabel(settings.find(s => s.key === 'marquee_label')?.value || 'Marcas que confían en nosotros');
+          setMarqueeLabelColor(settings.find(s => s.key === 'marquee_label_color')?.value || 'rgba(255,255,255,0.4)');
+          setMarqueeLabelSize(settings.find(s => s.key === 'marquee_label_size')?.value || '0.75');
+
+          setServicesTitle(settings.find(s => s.key === 'services_title')?.value || 'Servicios & Demos');
+          setServicesSubtitle(settings.find(s => s.key === 'services_subtitle')?.value || '');
+          setServicesTitleColor(settings.find(s => s.key === 'services_title_color')?.value || '#ffffff');
+          setServicesTitleColor2(settings.find(s => s.key === 'services_title_color_2')?.value || '#ffffff');
+          setServicesTitleGradient(settings.find(s => s.key === 'services_title_gradient')?.value === 'true');
+          setServicesTitleSize(settings.find(s => s.key === 'services_title_size')?.value || '3');
+          setServicesTitleEffect(settings.find(s => s.key === 'services_title_effect')?.value || 'none');
         }
         const { data: svcs } = await supabase.from('services').select('*').order('display_order');
         setServices(svcs || []);
@@ -115,6 +139,16 @@ export default function ContentPage() {
       { key: 'btn_primary_text', value: btnPrimaryText },
       { key: 'btn_secondary_border', value: btnSecondaryBorder },
       { key: 'btn_secondary_text', value: btnSecondaryText },
+      { key: 'marquee_label', value: marqueeLabel },
+      { key: 'marquee_label_color', value: marqueeLabelColor },
+      { key: 'marquee_label_size', value: marqueeLabelSize },
+      { key: 'services_title', value: servicesTitle },
+      { key: 'services_subtitle', value: servicesSubtitle },
+      { key: 'services_title_color', value: servicesTitleColor },
+      { key: 'services_title_color_2', value: servicesTitleColor2 },
+      { key: 'services_title_gradient', value: String(servicesTitleGradient) },
+      { key: 'services_title_size', value: servicesTitleSize },
+      { key: 'services_title_effect', value: servicesTitleEffect },
     ];
     await supabase.from('site_settings').upsert(updates);
     setSaving(false);
@@ -194,39 +228,90 @@ export default function ContentPage() {
 
           <section className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-4">
              <div className="flex items-center justify-between">
-                <h2 className="text-[10px] font-black uppercase text-white/20 flex items-center gap-2"><Globe size={14}/> Aliados (Marcas)</h2>
+                <h2 className="text-[10px] font-black uppercase text-accent-violet flex items-center gap-2"><Globe size={14}/> Marquesina (Marcas)</h2>
                 <button 
                   onClick={() => setBrands([...brands, { id: Date.now().toString(), name: 'Nueva', logo_url: '', display_order: brands.length }])}
                   className="text-[8px] font-black bg-white/5 px-2 py-1 rounded-md border border-white/10 hover:bg-white/10"
                 >
-                  + AÑADIR
+                  + AÑADIR MARCA
                 </button>
              </div>
-             <div className="grid grid-cols-3 gap-2">
-                {brands.map((b, idx) => (
-                   <div key={b.id} className="relative aspect-square bg-black/60 rounded-xl overflow-hidden group border border-white/5">
-                      {b.logo_url ? (
-                        <img src={b.logo_url} className="w-full h-full object-contain p-2" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[8px] text-white/10 font-bold">SIN LOGO</div>
-                      )}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-black/90 flex flex-col items-center justify-center gap-2 p-2 transition-all">
-                         <input 
-                           className="w-full bg-white/5 text-[8px] p-1 rounded border border-white/10" 
-                           value={b.logo_url} 
-                           onChange={(e) => {
-                             const newBrands = [...brands];
-                             newBrands[idx].logo_url = e.target.value;
-                             setBrands(newBrands);
-                           }}
-                           placeholder="URL Logo" 
-                         />
-                         <button onClick={() => setBrands(brands.filter(brand => brand.id !== b.id))} className="text-red-500 hover:scale-110">
-                           <Trash2 size={12}/>
-                         </button>
+             <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                   <div className="space-y-1">
+                      <p className="text-[8px] text-white/40 uppercase font-black ml-1">Texto Etiqueta</p>
+                      <input className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={marqueeLabel} onChange={(e)=>setMarqueeLabel(e.target.value)} />
+                   </div>
+                   <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                         <p className="text-[8px] text-white/40 uppercase font-black ml-1">Color</p>
+                         <input type="text" className="w-full bg-black/40 border border-white/10 rounded-xl px-2 py-2 text-[9px]" value={marqueeLabelColor} onChange={(e)=>setMarqueeLabelColor(e.target.value)} />
+                      </div>
+                      <div className="space-y-1">
+                         <p className="text-[8px] text-white/40 uppercase font-black ml-1">Size</p>
+                         <input type="number" step="0.05" className="w-full bg-black/40 border border-white/10 rounded-xl px-2 py-2 text-[9px]" value={marqueeLabelSize} onChange={(e)=>setMarqueeLabelSize(e.target.value)} />
                       </div>
                    </div>
-                ))}
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                   {brands.map((b, idx) => (
+                      <div key={b.id} className="relative aspect-square bg-black/60 rounded-xl overflow-hidden group border border-white/5">
+                         {b.logo_url ? (
+                           <img src={b.logo_url} className="w-full h-full object-contain p-2" />
+                         ) : (
+                           <div className="w-full h-full flex items-center justify-center text-[8px] text-white/10 font-bold">LOGO</div>
+                         )}
+                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-black/90 flex flex-col items-center justify-center gap-2 p-2 transition-all">
+                            <input 
+                              className="w-full bg-white/5 text-[8px] p-1 rounded border border-white/10" 
+                              value={b.logo_url} 
+                              onChange={(e) => {
+                                const newBrands = [...brands];
+                                newBrands[idx].logo_url = e.target.value;
+                                setBrands(newBrands);
+                              }}
+                              placeholder="URL Logo" 
+                            />
+                            <button onClick={() => setBrands(brands.filter(brand => brand.id !== b.id))} className="text-red-500">
+                              <Trash2 size={12}/>
+                            </button>
+                         </div>
+                      </div>
+                   ))}
+                </div>
+             </div>
+          </section>
+
+          <section className="bg-white/5 border border-white/10 p-6 rounded-3xl space-y-4">
+             <h2 className="text-[10px] font-black uppercase text-accent-cyan flex items-center gap-2"><Type size={14}/> Estilo Sección Servicios</h2>
+             <div className="space-y-4">
+                <div className="flex gap-2">
+                   <input className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs font-bold" value={servicesTitle} onChange={(e)=>setServicesTitle(e.target.value)} placeholder="Título Sección" />
+                   <div className="flex items-center gap-2 bg-black/40 border border-white/10 rounded-xl px-3 py-2">
+                     <span className="text-[8px] text-white/20 uppercase font-black">Tamaño</span>
+                     <input type="number" step="0.1" className="bg-transparent text-xs w-10 text-right font-bold text-accent-cyan" value={servicesTitleSize} onChange={(e)=>setServicesTitleSize(e.target.value)} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                   <div className="space-y-1">
+                      <p className="text-[7px] text-white/20 uppercase font-black">Color A</p>
+                      <input type="color" value={servicesTitleColor} onChange={(e)=>setServicesTitleColor(e.target.value)} className="w-full h-8 bg-transparent cursor-pointer" />
+                   </div>
+                   <div className="space-y-1">
+                      <p className="text-[7px] text-white/20 uppercase font-black">Color B</p>
+                      <input type="color" value={servicesTitleColor2} onChange={(e)=>setServicesTitleColor2(e.target.value)} className="w-full h-8 bg-transparent cursor-pointer" />
+                   </div>
+                   <div className="space-y-1">
+                      <p className="text-[7px] text-white/20 uppercase font-black">Efecto</p>
+                      <select className="w-full bg-black/40 border border-white/10 rounded-lg px-1 py-1.5 text-[9px]" value={servicesTitleEffect} onChange={(e)=>setServicesTitleEffect(e.target.value)}>
+                         <option value="none">Normal</option>
+                         <option value="glow">Glow</option>
+                         <option value="neon">Neon</option>
+                         <option value="3d">3D</option>
+                      </select>
+                   </div>
+                </div>
+                <textarea className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-[10px] h-12 resize-none" value={servicesSubtitle} onChange={(e)=>setServicesSubtitle(e.target.value)} placeholder="Subtítulo de sección..." />
              </div>
           </section>
         </div>
