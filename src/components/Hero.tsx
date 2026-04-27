@@ -63,10 +63,6 @@ const Hero = ({
 }: HeroProps) => {
   const [isMuted, setIsMuted] = useState(true);
 
-  const finalVideoUrl = videoUrl.includes('cloudinary.com') && effects 
-    ? videoUrl.replace('/video/upload/', `/video/upload/${effects}/`) 
-    : videoUrl;
-
   const getTextStyle = (isGrad: boolean, col1: string, col2: string, effect: string, size: string): React.CSSProperties => {
     const base: React.CSSProperties = {
       fontSize: `clamp(2.5rem, 8vw, ${size}rem)`,
@@ -88,8 +84,16 @@ const Hero = ({
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-black">
       <div className="absolute inset-0 z-0">
-        <video key={finalVideoUrl} autoPlay loop muted={isMuted} playsInline className="h-full w-full object-cover opacity-40">
-          <source src={finalVideoUrl} type="video/mp4" />
+        <video 
+          key={videoUrl} 
+          autoPlay 
+          loop 
+          muted={isMuted} 
+          playsInline 
+          style={{ filter: effects }}
+          className="h-full w-full object-cover opacity-40"
+        >
+          <source src={videoUrl} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
       </div>

@@ -177,7 +177,14 @@ export default function ContentPage() {
             <h2 className="text-[10px] font-black uppercase text-accent-cyan flex items-center gap-2"><Layout size={14}/> Banner Principal</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                <input className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={heroVideo} onChange={(e)=>setHeroVideo(e.target.value)} placeholder="URL Video Background" />
-               <input className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={heroEffects} onChange={(e)=>setHeroEffects(e.target.value)} placeholder="Efectos" />
+               <select className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs" value={heroEffects} onChange={(e)=>setHeroEffects(e.target.value)}>
+                  <option value="none">✨ Original</option>
+                  <option value="brightness(0.5)">🎬 Cine (Oscuro)</option>
+                  <option value="grayscale(1)">🌑 Noir (B&N)</option>
+                  <option value="contrast(1.2) sepia(0.3) hue-rotate(150deg)">🤖 Cyber (Futurista)</option>
+                  <option value="sepia(1)">📜 Vintage (Cálido)</option>
+                  <option value="blur(8px) brightness(0.7)">💎 Glass (Difuminado)</option>
+               </select>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                <input className="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-black" value={heroTitleMain} onChange={(e)=>setHeroTitleMain(e.target.value)} />
