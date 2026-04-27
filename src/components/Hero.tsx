@@ -108,9 +108,12 @@ const Hero = ({
         </motion.div>
       </div>
 
-      <button onClick={() => setIsMuted(!isMuted)} className="absolute z-40 bottom-8 right-8 flex items-center gap-2 px-5 py-3 glass rounded-full border border-white/10 text-white hover:bg-white/10 transition-all">
-        {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-        <span className="text-[10px] font-black uppercase tracking-widest">{isMuted ? "Activar Sonido" : "Silenciar"}</span>
+      <button 
+        onClick={() => setIsMuted(!isMuted)} 
+        className="absolute z-40 bottom-40 right-8 md:bottom-48 md:right-10 flex items-center gap-2 px-4 py-2 md:px-5 md:py-3 glass rounded-full border border-white/10 text-white hover:bg-white/10 transition-all shadow-xl"
+      >
+        {isMuted ? <VolumeX size={16} className="md:w-5 md:h-5" /> : <Volume2 size={16} className="md:w-5 md:h-5" />}
+        <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">{isMuted ? "Activar Sonido" : "Silenciar"}</span>
       </button>
 
       {brands.length > 0 && (
