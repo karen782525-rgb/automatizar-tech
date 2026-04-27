@@ -21,8 +21,15 @@ export default function ContentPage() {
   const [logoSize, setLogoSize] = useState('1.5');
 
   const [heroMainColor, setHeroMainColor] = useState('#ffffff');
+  const [heroMainColor2, setHeroMainColor2] = useState('#ffffff');
+  const [heroMainGradient, setHeroMainGradient] = useState(false);
+  const [heroMainEffect, setHeroMainEffect] = useState('none');
   const [heroMainSize, setHeroMainSize] = useState('8');
+
   const [heroAccentColor, setHeroAccentColor] = useState('#00f2ff');
+  const [heroAccentColor2, setHeroAccentColor2] = useState('#9d50bb');
+  const [heroAccentGradient, setHeroAccentGradient] = useState(true);
+  const [heroAccentEffect, setHeroAccentEffect] = useState('none');
   const [heroAccentSize, setHeroAccentSize] = useState('8');
 
   const [btnPrimaryBg, setBtnPrimaryBg] = useState('#00f2ff');
@@ -52,10 +59,19 @@ export default function ContentPage() {
           setLogoGradient(settings.find(s => s.key === 'logo_gradient')?.value === 'true');
           setLogoEffect(settings.find(s => s.key === 'logo_effect')?.value || 'none');
           setLogoSize(settings.find(s => s.key === 'logo_size')?.value || '1.5');
+          
           setHeroMainColor(settings.find(s => s.key === 'hero_main_color')?.value || '#ffffff');
+          setHeroMainColor2(settings.find(s => s.key === 'hero_main_color_2')?.value || '#ffffff');
+          setHeroMainGradient(settings.find(s => s.key === 'hero_main_gradient')?.value === 'true');
+          setHeroMainEffect(settings.find(s => s.key === 'hero_main_effect')?.value || 'none');
           setHeroMainSize(settings.find(s => s.key === 'hero_main_size')?.value || '8');
+          
           setHeroAccentColor(settings.find(s => s.key === 'hero_accent_color')?.value || '#00f2ff');
+          setHeroAccentColor2(settings.find(s => s.key === 'hero_accent_color_2')?.value || '#9d50bb');
+          setHeroAccentGradient(settings.find(s => s.key === 'hero_accent_gradient')?.value === 'true');
+          setHeroAccentEffect(settings.find(s => s.key === 'hero_accent_effect')?.value || 'none');
           setHeroAccentSize(settings.find(s => s.key === 'hero_accent_size')?.value || '8');
+
           setBtnPrimaryBg(settings.find(s => s.key === 'btn_primary_bg')?.value || '#00f2ff');
           setBtnPrimaryText(settings.find(s => s.key === 'btn_primary_text')?.value || '#000000');
           setBtnSecondaryBorder(settings.find(s => s.key === 'btn_secondary_border')?.value || '#ffffff');
@@ -86,8 +102,14 @@ export default function ContentPage() {
       { key: 'logo_effect', value: logoEffect },
       { key: 'logo_size', value: logoSize },
       { key: 'hero_main_color', value: heroMainColor },
+      { key: 'hero_main_color_2', value: heroMainColor2 },
+      { key: 'hero_main_gradient', value: String(heroMainGradient) },
+      { key: 'hero_main_effect', value: heroMainEffect },
       { key: 'hero_main_size', value: heroMainSize },
       { key: 'hero_accent_color', value: heroAccentColor },
+      { key: 'hero_accent_color_2', value: heroAccentColor2 },
+      { key: 'hero_accent_gradient', value: String(heroAccentGradient) },
+      { key: 'hero_accent_effect', value: heroAccentEffect },
       { key: 'hero_accent_size', value: heroAccentSize },
       { key: 'btn_primary_bg', value: btnPrimaryBg },
       { key: 'btn_primary_text', value: btnPrimaryText },
@@ -239,19 +261,72 @@ export default function ContentPage() {
             </div>
 
             {/* Title Settings */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-               <div className="space-y-1">
-                  <p className="text-[8px] text-white/40 uppercase font-black ml-2">Título 1 (Blanco)</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+               {/* Título 1 */}
+               <div className="bg-black/20 p-4 rounded-2xl border border-white/5 space-y-4">
+                  <div className="flex justify-between items-center">
+                     <p className="text-[8px] text-white/40 uppercase font-black">Título 1 (Principal)</p>
+                     <div className="flex items-center gap-2">
+                        <span className="text-[8px] text-white/20 uppercase font-black">Degradado</span>
+                        <input type="checkbox" checked={heroMainGradient} onChange={(e)=>setHeroMainGradient(e.target.checked)} className="accent-accent-cyan" />
+                     </div>
+                  </div>
                   <div className="flex gap-2">
                      <input className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-black" value={heroTitleMain} onChange={(e)=>setHeroTitleMain(e.target.value)} />
                      <input type="number" step="0.5" className="w-16 bg-black/40 border border-accent-cyan/30 rounded-xl px-2 py-2 text-xs font-bold text-accent-cyan text-center" value={heroMainSize} onChange={(e)=>setHeroMainSize(e.target.value)} />
                   </div>
+                  <div className="grid grid-cols-3 gap-2">
+                     <div className="space-y-1">
+                        <p className="text-[7px] text-white/20 uppercase font-black">Color A</p>
+                        <input type="color" value={heroMainColor} onChange={(e)=>setHeroMainColor(e.target.value)} className="w-full h-8 bg-transparent cursor-pointer" />
+                     </div>
+                     <div className="space-y-1">
+                        <p className="text-[7px] text-white/20 uppercase font-black">Color B</p>
+                        <input type="color" value={heroMainColor2} onChange={(e)=>setHeroMainColor2(e.target.value)} disabled={!heroMainGradient} className="w-full h-8 bg-transparent cursor-pointer disabled:opacity-20" />
+                     </div>
+                     <div className="space-y-1">
+                        <p className="text-[7px] text-white/20 uppercase font-black">Efecto</p>
+                        <select className="w-full bg-black/40 border border-white/10 rounded-lg px-1 py-1.5 text-[9px]" value={heroMainEffect} onChange={(e)=>setHeroMainEffect(e.target.value)}>
+                           <option value="none">Normal</option>
+                           <option value="glow">Glow</option>
+                           <option value="neon">Neon</option>
+                           <option value="3d">3D</option>
+                        </select>
+                     </div>
+                  </div>
                </div>
-               <div className="space-y-1">
-                  <p className="text-[8px] text-white/40 uppercase font-black ml-2">Título 2 (Cian)</p>
+
+               {/* Título 2 */}
+               <div className="bg-black/20 p-4 rounded-2xl border border-white/5 space-y-4">
+                  <div className="flex justify-between items-center">
+                     <p className="text-[8px] text-white/40 uppercase font-black text-accent-cyan">Título 2 (Acento)</p>
+                     <div className="flex items-center gap-2">
+                        <span className="text-[8px] text-white/20 uppercase font-black">Degradado</span>
+                        <input type="checkbox" checked={heroAccentGradient} onChange={(e)=>setHeroAccentGradient(e.target.checked)} className="accent-accent-cyan" />
+                     </div>
+                  </div>
                   <div className="flex gap-2">
                      <input className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm font-black text-accent-cyan" value={heroTitleAccent} onChange={(e)=>setHeroTitleAccent(e.target.value)} />
                      <input type="number" step="0.5" className="w-16 bg-black/40 border border-accent-cyan/30 rounded-xl px-2 py-2 text-xs font-bold text-accent-cyan text-center" value={heroAccentSize} onChange={(e)=>setHeroAccentSize(e.target.value)} />
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                     <div className="space-y-1">
+                        <p className="text-[7px] text-white/20 uppercase font-black">Color A</p>
+                        <input type="color" value={heroAccentColor} onChange={(e)=>setHeroAccentColor(e.target.value)} className="w-full h-8 bg-transparent cursor-pointer" />
+                     </div>
+                     <div className="space-y-1">
+                        <p className="text-[7px] text-white/20 uppercase font-black">Color B</p>
+                        <input type="color" value={heroAccentColor2} onChange={(e)=>setHeroAccentColor2(e.target.value)} disabled={!heroAccentGradient} className="w-full h-8 bg-transparent cursor-pointer disabled:opacity-20" />
+                     </div>
+                     <div className="space-y-1">
+                        <p className="text-[7px] text-white/20 uppercase font-black">Efecto</p>
+                        <select className="w-full bg-black/40 border border-white/10 rounded-lg px-1 py-1.5 text-[9px]" value={heroAccentEffect} onChange={(e)=>setHeroAccentEffect(e.target.value)}>
+                           <option value="none">Normal</option>
+                           <option value="glow">Glow</option>
+                           <option value="neon">Neon</option>
+                           <option value="3d">3D</option>
+                        </select>
+                     </div>
                   </div>
                </div>
             </div>
