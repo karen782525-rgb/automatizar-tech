@@ -66,13 +66,26 @@ const Hero = ({
   const [isMuted, setIsMuted] = React.useState(true);
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
-  const toggleAudio = () => {
+  const toggleAudio = async () => {
     if (videoRef.current) {
-      const newMuted = !isMuted;
-      videoRef.current.muted = newMuted;
-      setIsMuted(newMuted);
-      // Aseguramos que el video siga reproduciéndose
-      videoRef.current.play().catch(e => console.log("Audio play blocked", e));
+      try {
+        const video = videoRef.current;
+        const newMuted = !isMuted;
+        
+        // Primero cambiamos el estado de silencio
+        video.muted = newMuted;
+        setIsMuted(newMuted);
+
+        // Si el video se pausó por el cambio (pasa en algunos PCs), lo reanudamos
+        if (video.paused) {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            await playPromise;
+          }
+        }
+      } catch (e) {
+        console.error("Error al gestionar audio:", e);
+      }
     }
   };
 
