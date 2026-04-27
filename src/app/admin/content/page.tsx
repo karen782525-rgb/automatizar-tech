@@ -432,7 +432,17 @@ export default function ContentPage() {
                 <button onClick={() => deleteService(service.id)} className="text-red-500/20 hover:text-red-500 transition-colors"><Trash2 size={24} /></button>
               </div>
               <textarea className="bg-transparent text-white/40 text-lg w-full border-none p-0 h-24 resize-none focus:ring-0 outline-none leading-relaxed" value={service.description} onBlur={(e) => updateService(service.id, 'description', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, description: e.target.value } : s))} />
-              <div className="flex items-center gap-4 pt-6 border-t border-white/5 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-white/5">
+                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">
+                  <FileText size={14} className="text-accent-violet" />
+                  <input className="w-full bg-transparent border-none p-0 focus:ring-0 outline-none" placeholder="Texto del Botón (ej: Ver Demo)" value={service.button_text} onBlur={(e) => updateService(service.id, 'button_text', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, button_text: e.target.value } : s))} />
+                </div>
+                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">
+                  <Layout size={14} className="text-accent-cyan" />
+                  <input className="w-full bg-transparent border-none p-0 focus:ring-0 outline-none" placeholder="Link de la Demo (URL)" value={service.button_url} onBlur={(e) => updateService(service.id, 'button_url', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, button_url: e.target.value } : s))} />
+                </div>
+              </div>
+              <div className="flex items-center gap-4 pt-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">
                 <Video size={14} className="text-accent-cyan" />
                 <input className="w-full bg-transparent border-none p-0 focus:ring-0 outline-none" placeholder="Video Cloudinary URL" value={service.video_url} onBlur={(e) => updateService(service.id, 'video_url', e.target.value)} onChange={(e) => setServices(services.map(s => s.id === service.id ? { ...s, video_url: e.target.value } : s))} />
               </div>
