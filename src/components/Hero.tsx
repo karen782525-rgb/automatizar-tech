@@ -138,13 +138,13 @@ const Hero = ({
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-7xl">
+      <div className="relative z-10 text-center px-4 max-w-7xl pt-20 pb-40">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
-          <h1 className="font-extrabold tracking-tighter mb-6 leading-tight flex flex-wrap justify-center items-center gap-x-4 md:gap-x-6">
+          <h1 className="font-extrabold tracking-tighter mb-6 leading-tight flex flex-wrap justify-center items-center gap-x-4 md:gap-x-8">
             <span 
               style={getTextStyle(mainGradient, mainColor, mainColor2, mainEffect, mainSize)} 
               className="inline-block"
@@ -184,7 +184,7 @@ const Hero = ({
         </motion.div>
       </div>
 
-      {/* Audio Toggle Button - REPOSITIONED AND NEUTRAL */}
+      {/* Audio Toggle Button - REPOSITIONED */}
       <motion.button 
         onClick={() => setIsMuted(!isMuted)}
         initial={{ scale: 0.8, opacity: 0 }}
@@ -198,7 +198,7 @@ const Hero = ({
           duration: 0.5
         }}
         className={`absolute z-40 flex items-center gap-2 px-4 py-3 md:px-6 md:py-4 glass rounded-full border transition-all shadow-[0_0_30px_rgba(255,255,255,0.05)] group text-white
-          top-24 right-6 md:top-auto md:bottom-40 md:right-8`}
+          top-24 right-6 md:top-auto md:bottom-12 md:right-12`}
       >
         <div className="relative">
           {isMuted ? <VolumeX size={18} className="md:w-6 md:h-6" /> : <Volume2 size={18} className="md:w-6 md:h-6" />}
@@ -216,13 +216,13 @@ const Hero = ({
         </span>
       </motion.button>
 
-      {/* Brand Marquee at the bottom */}
+      {/* Brand Marquee at the bottom - PUSHED DOWN */}
       {brands.length > 0 && (
-        <div className="absolute bottom-12 md:bottom-24 w-full z-20">
+        <div className="absolute bottom-6 md:bottom-10 w-full z-20">
           <div className="max-w-7xl mx-auto px-4">
             <p 
               style={{ color: marqueeLabelColor, fontSize: `${marqueeLabelSize}rem` }}
-              className="text-center uppercase tracking-[0.4em] mb-8 md:mb-10 font-bold"
+              className="text-center uppercase tracking-[0.4em] mb-4 md:mb-6 font-bold"
             >
               {marqueeLabel}
             </p>
@@ -252,16 +252,17 @@ const Hero = ({
         </div>
       )}
 
-      {/* Floating Scroll Indicator */}
+      {/* Floating Scroll Indicator - HIDDEN ON MOBILE TO SAVE SPACE */}
       <motion.div 
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 text-white/30"
+        className="absolute bottom-2 left-1/2 -translate-x-1/2 text-white/10 hidden md:block"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
         </svg>
       </motion.div>
+    </section>
     </section>
   );
 };
