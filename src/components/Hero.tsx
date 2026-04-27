@@ -151,8 +151,8 @@ const Hero = ({
       {Array.isArray(brands) && brands.filter(b => b.logo_url && (b.logo_url.startsWith('http') || b.logo_url.startsWith('/'))).length > 0 && (
         <div className="absolute bottom-8 w-full z-20">
           <p style={{ color: marqueeLabelColor, fontSize: `${marqueeLabelSize}rem` }} className="text-center uppercase tracking-[0.4em] mb-6 font-bold">{marqueeLabel}</p>
-          <div className="relative overflow-hidden">
-            <motion.div className="flex gap-16 md:gap-32 items-center w-max mx-auto" animate={{ x: ["0%", "-50%"] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}>
+          <div className="relative overflow-hidden w-full flex justify-center">
+            <motion.div className="flex gap-16 md:gap-32 items-center justify-center w-max" animate={{ x: ["0%", "-50%"] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}>
               {(() => {
                 const validBrands = Array.isArray(brands) ? brands.filter(b => b.logo_url && (b.logo_url.startsWith('http') || b.logo_url.startsWith('/'))) : [];
                 return [...validBrands, ...validBrands].map((brand, idx) => (
